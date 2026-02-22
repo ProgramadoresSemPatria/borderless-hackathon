@@ -41,17 +41,18 @@ export function AdminSidebar() {
                 : 'text-[#b2b2b2] hover:bg-white/5 hover:text-white'
             }`}
           >
-            <Icon className="h-4 w-4" />
+            <Icon className="h-4 w-4" aria-hidden="true" />
             {label}
           </Link>
         ))}
       </nav>
 
       <button
+        type="button"
         onClick={handleLogout}
         className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-[#636363] transition-colors hover:bg-white/5 hover:text-white"
       >
-        <LogOut className="h-4 w-4" />
+        <LogOut className="h-4 w-4" aria-hidden="true" />
         Sair
       </button>
     </aside>

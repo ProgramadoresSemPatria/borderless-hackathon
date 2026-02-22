@@ -80,17 +80,17 @@ export default function ResultadosPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-white/10 text-left text-xs font-semibold uppercase tracking-widest text-[#636363]">
-                  <th className="px-6 py-4">#</th>
-                  <th className="px-6 py-4">Embaixador</th>
-                  <th className="px-6 py-4">Time</th>
-                  <th className="px-6 py-4">Presença</th>
-                  <th className="px-6 py-4">Tasks</th>
-                  <th className="px-6 py-4">Pontos</th>
+                  <th scope="col" className="px-6 py-4">#</th>
+                  <th scope="col" className="px-6 py-4">Embaixador</th>
+                  <th scope="col" className="px-6 py-4">Time</th>
+                  <th scope="col" className="px-6 py-4">Presença</th>
+                  <th scope="col" className="px-6 py-4">Tasks</th>
+                  <th scope="col" className="px-6 py-4">Pontos</th>
                 </tr>
               </thead>
               <tbody>
                 {participants.map((p, i) => {
-                  const team = getRankedTeams().find(t => t.id === p.teamId)
+                  const team = teams.find(t => t.id === p.teamId)
                   return (
                     <tr
                       key={p.id}

@@ -9,10 +9,8 @@ interface PodiumProps {
 
 const MEDAL: Record<1 | 2 | 3, string> = { 1: '🥇', 2: '🥈', 3: '🥉' }
 
-export function Podium({ teams }: PodiumProps) {
-  const [first, second, third] = [teams[0], teams[1], teams[2]]
-
-  const PodiumBlock = ({ team, position, height }: { team: Team; position: 1 | 2 | 3; height: string }) => (
+function PodiumBlock({ team, position, height }: { team: Team; position: 1 | 2 | 3; height: string }) {
+  return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
@@ -43,6 +41,10 @@ export function Podium({ teams }: PodiumProps) {
       </div>
     </motion.div>
   )
+}
+
+export function Podium({ teams }: PodiumProps) {
+  const [first, second, third] = [teams[0], teams[1], teams[2]]
 
   return (
     <div className="flex items-end justify-center gap-4">

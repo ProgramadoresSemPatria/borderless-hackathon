@@ -7,8 +7,9 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft, Users } from 'lucide-react'
 import Link from 'next/link'
 
-export default function TeamDetailPage({ params }: { params: { id: string } }) {
-  const team = getTeamById(params.id)
+export default async function TeamDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const team = getTeamById(id)
   if (!team) return notFound()
 
   const members = getTeamParticipants(team.id)
