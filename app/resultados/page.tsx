@@ -14,27 +14,34 @@ export default function ResultadosPage() {
       <PublicNavbar />
       <main className="mx-auto max-w-7xl px-6 pb-24 pt-32">
         <div className="mb-16 text-center">
-          <h1 className="mb-3 text-4xl font-extrabold text-white sm:text-5xl">
+          <h1 className="mb-4 text-5xl font-black leading-none tracking-tight text-white sm:text-7xl">
             <GradientText>Resultados Finais</GradientText>
           </h1>
-          <p className="text-[#b2b2b2]">{hackathonConfig.edition} · {hackathonConfig.date}</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#636363]">
+            {hackathonConfig.edition} · {hackathonConfig.date}
+          </p>
         </div>
 
         {/* Podium */}
         <section className="mb-20">
-          <h2 className="mb-8 text-center text-xl font-semibold text-white">Pódio</h2>
+          <p className="mb-8 text-center text-xs font-semibold uppercase tracking-[0.2em] text-[#9810fa]">Pódio</p>
           <Podium teams={teams} />
         </section>
 
         {/* Teams Ranking */}
         <section className="mb-20">
-          <h2 className="mb-6 text-2xl font-bold text-white">Ranking de Times</h2>
+          <h2 className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-[#636363]">Ranking de Times</h2>
           <div className="space-y-4">
             {teams.map((team, i) => (
-              <div key={team.id} className="glass rounded-2xl p-6">
+              <div key={team.id} className={`rounded-2xl transition-colors ${i === 0 ? 'glass-featured p-8' : 'glass p-6'}`}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    <span className="text-3xl font-black text-[#636363]">#{team.position}</span>
+                    <span className={`font-black tabular-nums leading-none ${
+                      team.position === 1 ? 'text-6xl text-[#9810fa]' :
+                      team.position === 2 ? 'text-5xl text-[#2debb1]' :
+                      team.position === 3 ? 'text-4xl text-white/60' :
+                      'text-3xl text-[#636363]'
+                    }`}>{team.position}</span>
                     <div>
                       <h3 className="text-lg font-bold text-white">{team.name}</h3>
                       <p className="text-sm text-[#b2b2b2]">{team.project}</p>
@@ -48,11 +55,17 @@ export default function ResultadosPage() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-extrabold">
+                    <div className={`font-extrabold tabular-nums ${
+                      i === 0 ? 'text-3xl' :
+                      i === 1 ? 'text-2xl' :
+                      'text-xl'
+                    }`}>
                       {i === 0 ? (
                         <GradientText>{team.totalScore.toFixed(2)}</GradientText>
+                      ) : i === 1 ? (
+                        <span className="text-[#2debb1]">{team.totalScore.toFixed(2)}</span>
                       ) : (
-                        <span className="text-white">{team.totalScore.toFixed(2)}</span>
+                        <span className="text-white/50">{team.totalScore.toFixed(2)}</span>
                       )}
                     </div>
                     <div className="text-xs text-[#636363]">pontuação total</div>
@@ -75,7 +88,7 @@ export default function ResultadosPage() {
 
         {/* Individual Leaderboard */}
         <section>
-          <h2 className="mb-6 text-2xl font-bold text-white">Leaderboard Individual</h2>
+          <h2 className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-[#636363]">Leaderboard Individual</h2>
           <div className="glass overflow-hidden rounded-2xl">
             <table className="w-full">
               <thead>
@@ -98,7 +111,16 @@ export default function ResultadosPage() {
                         i % 2 === 0 ? 'bg-[#2a2a2b]/50' : 'bg-[#232322]/50'
                       }`}
                     >
-                      <td className="px-6 py-4 text-[#636363] font-bold">{i + 1}</td>
+                      <td className="px-6 py-4 font-black tabular-nums">
+                        <span className={
+                          i === 0 ? 'text-[#9810fa]' :
+                          i === 1 ? 'text-[#2debb1]' :
+                          i === 2 ? 'text-white/60' :
+                          'text-[#636363]'
+                        }>
+                          {i + 1}
+                        </span>
+                      </td>
                       <td className="px-6 py-4">
                         <span className={`font-semibold ${i === 0 ? 'gradient-brand-text' : 'text-white'}`}>
                           {p.name}

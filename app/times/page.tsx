@@ -20,27 +20,28 @@ export default function TimesPage() {
       />
       <main className="relative mx-auto max-w-7xl px-6 pb-24 pt-32">
         <div className="mb-16 text-center">
-          <h1 className="mb-3 text-4xl font-extrabold text-white sm:text-5xl">
+          <h1 className="mb-4 text-5xl font-black leading-none tracking-tight text-white sm:text-7xl">
             <GradientText>Times</GradientText>
           </h1>
-          <p className="text-[#b2b2b2]">Todos os times participantes do hackathon</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#636363]">Todos os times participantes</p>
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           {teams.map((team) => {
             const members = getTeamParticipants(team.id)
+            const isWinner = team.position === 1
             return (
-              <TiltedCard key={team.id}>
+              <TiltedCard key={team.id} className={isWinner ? 'sm:col-span-2' : ''}>
                 <Link href={`/times/${team.id}`}>
-                  <div className="glass rounded-2xl p-6 transition-colors hover:border-[#9810fa]/40">
+                  <div className={`rounded-2xl transition-colors ${isWinner ? 'glass-featured p-8' : 'glass p-6 hover:border-[#9810fa]/40'}`}>
                     <div className="mb-4 flex items-start justify-between">
                       <div>
                         {team.position && (
-                          <span className="mb-2 inline-block text-xs font-bold text-[#9810fa]">
+                          <span className={`mb-2 inline-block text-xs font-bold ${isWinner ? 'text-[#9810fa]' : 'text-[#636363]'}`}>
                             #{team.position} no ranking
                           </span>
                         )}
-                        <h3 className="text-xl font-bold text-white">{team.name}</h3>
+                        <h3 className={`font-black leading-tight text-white ${isWinner ? 'text-3xl' : 'text-2xl'}`}>{team.name}</h3>
                         <p className="text-base font-semibold text-[#2debb1]">{team.project}</p>
                       </div>
                       <div className="text-right">

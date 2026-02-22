@@ -5,7 +5,7 @@ import { CountingNumber } from '@/components/animated/counting-number'
 import { PublicNavbar } from '@/components/public/navbar'
 import { getRankedTeams, getRankedParticipants, hackathonConfig, participants, teams } from '@/lib/mock-data'
 import Link from 'next/link'
-import { Trophy, Users, Code2, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 export default function HomePage() {
   const rankedTeams = getRankedTeams()
@@ -26,7 +26,7 @@ export default function HomePage() {
 
             <BlurText
               text={hackathonConfig.name}
-              className="mb-4 justify-center text-5xl font-extrabold leading-tight text-white sm:text-7xl"
+              className="mb-4 justify-center text-6xl font-black leading-none tracking-tight text-white sm:text-8xl lg:text-9xl"
               animateBy="words"
             />
 
@@ -34,26 +34,31 @@ export default function HomePage() {
               {hackathonConfig.date} · Comunidade de Embaixadores Borderless
             </p>
 
-            {/* Stats */}
-            <div className="mb-12 flex flex-wrap justify-center gap-8">
-              {[
-                { label: 'Times', value: teams.length, icon: Code2 },
-                { label: 'Participantes', value: participants.length, icon: Users },
-                { label: 'Critérios', value: hackathonConfig.criteria.length, icon: Trophy },
-              ].map(({ label, value, icon: Icon }) => (
-                <div key={label} className="flex flex-col items-center gap-1">
-                  <Icon className="h-5 w-5 text-[#9810fa]" />
-                  <span className="text-4xl font-bold text-white">
-                    <CountingNumber value={value} />
-                  </span>
-                  <span className="text-sm text-[#b2b2b2]">{label}</span>
-                </div>
-              ))}
+            {/* Stats — skyline hierarchy: one dominant, two supporting */}
+            <div className="mb-12 flex flex-wrap items-end justify-center gap-10">
+              <div className="flex flex-col items-center gap-1.5">
+                <span className="text-7xl font-black leading-none tabular-nums text-white">
+                  <CountingNumber value={participants.length} />
+                </span>
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#9810fa]">Participantes</span>
+              </div>
+              <div className="mb-4 flex flex-col items-center gap-1">
+                <span className="text-4xl font-black leading-none tabular-nums text-white/70">
+                  <CountingNumber value={teams.length} />
+                </span>
+                <span className="text-xs text-[#b2b2b2]">Times</span>
+              </div>
+              <div className="mb-4 flex flex-col items-center gap-1">
+                <span className="text-4xl font-black leading-none tabular-nums text-white/70">
+                  <CountingNumber value={hackathonConfig.criteria.length} />
+                </span>
+                <span className="text-xs text-[#b2b2b2]">Critérios</span>
+              </div>
             </div>
 
             <Link
               href="/resultados"
-              className="group flex items-center gap-2 rounded-full bg-[#9810fa] px-8 py-3.5 text-base font-semibold text-white transition-all hover:bg-[#b040ff] hover:shadow-lg hover:shadow-[#9810fa]/30"
+              className="group flex items-center gap-2 rounded-full bg-[#9810fa] px-10 py-4 text-base font-bold tracking-wide text-white transition-all duration-200 hover:bg-[#9810fa]/90 hover:shadow-2xl hover:shadow-[#9810fa]/40 active:scale-[0.98]"
             >
               Ver Resultados
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -63,9 +68,9 @@ export default function HomePage() {
 
         {/* Highlights */}
         <section className="mx-auto max-w-7xl px-6 py-24">
-          <h2 className="mb-12 text-center text-3xl font-bold text-white">
+          <p className="mb-12 text-center text-xs font-semibold uppercase tracking-[0.2em] text-[#636363]">
             Destaques do Evento
-          </h2>
+          </p>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {/* 1st place */}
