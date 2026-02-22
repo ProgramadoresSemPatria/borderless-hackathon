@@ -48,7 +48,7 @@ export default function AdminParticipantsPage() {
                   <td className="px-6 py-4 text-center text-[#b2b2b2]">{p.metrics.contributions}</td>
                   <td className="px-6 py-4 font-bold text-[#9810fa]">{p.metrics.totalPoints}</td>
                   <td className="px-6 py-4">
-                    <Button size="sm" variant="ghost" onClick={() => setEditing(p)} className="h-8 w-8 p-0 text-[#b2b2b2] hover:text-white">
+                    <Button size="sm" variant="ghost" onClick={() => setEditing(p)} aria-label={`Editar ${p.name}`} className="h-8 w-8 p-0 text-[#b2b2b2] hover:text-white">
                       <Pencil className="h-4 w-4" aria-hidden="true" />
                     </Button>
                   </td>
@@ -60,6 +60,7 @@ export default function AdminParticipantsPage() {
       </div>
 
       <ParticipantEditDialog
+        key={editing?.id}
         participant={editing}
         open={!!editing}
         onClose={() => setEditing(null)}

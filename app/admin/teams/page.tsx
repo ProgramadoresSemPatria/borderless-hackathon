@@ -53,6 +53,7 @@ export default function AdminTeamsPage() {
                     size="sm"
                     variant="ghost"
                     onClick={() => setEditingTeam(team)}
+                    aria-label={`Editar ${team.name}`}
                     className="h-8 w-8 p-0 text-[#b2b2b2] hover:text-white"
                   >
                     <Pencil className="h-4 w-4" aria-hidden="true" />
@@ -65,6 +66,7 @@ export default function AdminTeamsPage() {
       </div>
 
       <TeamEditDialog
+        key={editingTeam?.id}
         team={editingTeam}
         open={!!editingTeam}
         onClose={() => setEditingTeam(null)}
