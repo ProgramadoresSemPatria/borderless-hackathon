@@ -67,6 +67,16 @@ export const participants: Participant[] = [
   },
 ]
 
+function averageScores(scores: Record<string, number>): number {
+  const values = Object.values(scores)
+  return parseFloat((values.reduce((sum, s) => sum + s, 0) / values.length).toFixed(3))
+}
+
+const t1Scores = { Inovação: 9.5, Execução: 9.0, Pitch: 8.5, Impacto: 9.2 }
+const t2Scores = { Inovação: 8.8, Execução: 9.2, Pitch: 9.0, Impacto: 8.5 }
+const t3Scores = { Inovação: 8.0, Execução: 7.5, Pitch: 8.2, Impacto: 8.8 }
+const t4Scores = { Inovação: 7.5, Execução: 8.0, Pitch: 7.2, Impacto: 7.8 }
+
 export const teams: Team[] = [
   {
     id: 't1',
@@ -74,8 +84,8 @@ export const teams: Team[] = [
     project: 'BorderBot',
     description: 'Assistente de IA para onboarding de embaixadores internacionais.',
     members: ['p1', 'p2'],
-    scores: { Inovação: 9.5, Execução: 9.0, Pitch: 8.5, Impacto: 9.2 },
-    totalScore: 9.05,
+    scores: t1Scores,
+    totalScore: averageScores(t1Scores),
     position: 1,
     tags: ['IA', 'Onboarding', 'Bot'],
   },
@@ -85,8 +95,8 @@ export const teams: Team[] = [
     project: 'GlobeConnect',
     description: 'Plataforma de networking para embaixadores ao redor do mundo.',
     members: ['p3', 'p4'],
-    scores: { Inovação: 8.8, Execução: 9.2, Pitch: 9.0, Impacto: 8.5 },
-    totalScore: 8.875,
+    scores: t2Scores,
+    totalScore: averageScores(t2Scores),
     position: 2,
     tags: ['Networking', 'Plataforma'],
   },
@@ -96,8 +106,8 @@ export const teams: Team[] = [
     project: 'ImpactTrack',
     description: 'Dashboard de métricas de impacto para programas de aceleração.',
     members: ['p5', 'p6'],
-    scores: { Inovação: 8.0, Execução: 7.5, Pitch: 8.2, Impacto: 8.8 },
-    totalScore: 8.125,
+    scores: t3Scores,
+    totalScore: averageScores(t3Scores),
     position: 3,
     tags: ['Dashboard', 'Métricas'],
   },
@@ -107,8 +117,8 @@ export const teams: Team[] = [
     project: 'TalentRadar',
     description: 'Ferramenta de mapeamento de talentos tech na América Latina.',
     members: ['p7', 'p8'],
-    scores: { Inovação: 7.5, Execução: 8.0, Pitch: 7.2, Impacto: 7.8 },
-    totalScore: 7.625,
+    scores: t4Scores,
+    totalScore: averageScores(t4Scores),
     position: 4,
     tags: ['Talentos', 'Mapeamento'],
   },
