@@ -43,10 +43,10 @@ export function HeroSection({
         </div>
       )}
 
-      {/* Borderless logo — right half, mix-blend-mode screen so dark parts vanish into bg */}
+      {/* Borderless logo — bottom-right, anchored to same baseline as text */}
       <motion.div
         aria-hidden="true"
-        className="pointer-events-none absolute right-0 top-0 hidden h-full items-center pr-10 lg:flex xl:pr-20"
+        className="pointer-events-none absolute bottom-0 right-0 hidden items-end pb-16 pr-10 lg:flex xl:pr-20"
         initial={{ opacity: 0, x: 56 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 1.5, delay: 0.1, ease: E }}
@@ -55,7 +55,7 @@ export function HeroSection({
           src="/brand/borderless-logo.svg"
           alt=""
           className="w-auto"
-          style={{ height: 'min(64vh, 560px)', mixBlendMode: 'screen' }}
+          style={{ height: 'min(72vh, 640px)', mixBlendMode: 'screen' }}
         />
       </motion.div>
 
