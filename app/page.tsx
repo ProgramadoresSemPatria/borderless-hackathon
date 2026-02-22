@@ -1,3 +1,4 @@
+import { HeroGrain } from '@/components/animated/hero-grain'
 import { HeroReveal } from '@/components/animated/hero-reveal'
 import { PublicNavbar } from '@/components/public/navbar'
 import { getRankedTeams, getRankedParticipants, hackathonConfig, participants, teams } from '@/lib/mock-data'
@@ -17,31 +18,21 @@ export default function HomePage() {
       <main>
         {/* Hero */}
         <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pb-20 pt-32 text-center">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 h-[70vh]"
-            style={{
-              background:
-                'radial-gradient(ellipse 90% 100% at 50% 0%, rgba(152,16,250,0.16) 0%, transparent 100%)',
-            }}
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden select-none"
-          >
-            <span
-              className="font-black leading-none text-white"
-              style={{
-                fontSize: 'clamp(7rem, 32vw, 26rem)',
-                opacity: 0.03,
-                letterSpacing: '-0.04em',
-              }}
-            >
-              HACK
-            </span>
-          </div>
+          <HeroGrain />
 
           <div className="relative z-10 flex flex-col items-center">
+            {/* Borderless logo mark */}
+            <div className="mb-8">
+              <img
+                src="/brand/cover-thumb.webp"
+                alt="Borderless"
+                width={56}
+                height={56}
+                className="rounded-full border border-white/10 object-cover"
+                style={{ width: 56, height: 56 }}
+              />
+            </div>
+
             <div className="mb-6 flex items-center justify-center gap-4">
               <span className="h-px w-8 bg-[#9810fa]/50" />
               <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#9810fa]">
