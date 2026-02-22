@@ -4,9 +4,9 @@ import type { ReactNode } from 'react'
 
 export function AuroraBackground({ children }: { children: ReactNode }) {
   return (
-    <div className="relative overflow-hidden bg-[#222]">
+    <div className="relative overflow-hidden bg-background">
       {/* Aurora blobs */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
         <motion.div
           animate={{ x: [0, 60, 0], y: [0, -40, 0], scale: [1, 1.2, 1] }}
           transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}

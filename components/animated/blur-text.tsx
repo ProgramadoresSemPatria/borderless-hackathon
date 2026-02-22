@@ -9,6 +9,11 @@ interface BlurTextProps {
   animateBy?: 'words' | 'characters'
 }
 
+const tokenVariants = {
+  hidden: { opacity: 0, filter: 'blur(10px)', y: 10 },
+  visible: { opacity: 1, filter: 'blur(0px)', y: 0 },
+}
+
 export function BlurText({
   text,
   delay = 0.05,
@@ -35,10 +40,7 @@ export function BlurText({
       {tokens.map((token, i) => (
         <motion.span
           key={i}
-          variants={{
-            hidden: { opacity: 0, filter: 'blur(10px)', y: 10 },
-            visible: { opacity: 1, filter: 'blur(0px)', y: 0 },
-          }}
+          variants={tokenVariants}
           transition={{ duration: 0.5, delay: i * delay, ease: 'easeOut' }}
         >
           {token}
