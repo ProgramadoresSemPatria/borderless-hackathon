@@ -43,7 +43,20 @@ export default async function SlugPage({
             }}
           />
 
-          <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pb-2 pt-32">
+          {/* Logo mark — large, right side */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute right-0 top-0 hidden h-full items-center justify-end pr-8 lg:flex xl:pr-16"
+          >
+            <img
+              src="/brand/borderless-logo.svg"
+              alt=""
+              className="w-auto"
+              style={{ height: 'min(58vh, 520px)' }}
+            />
+          </div>
+
+          <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pb-2 pt-32 lg:max-w-[56%]">
             {/* Eyebrow */}
             <div className="mb-8 flex items-center gap-4">
               <img
