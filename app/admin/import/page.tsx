@@ -97,7 +97,7 @@ export default function ImportPage() {
             <h3 className="mb-3 font-semibold text-white">Times ({teams.length})</h3>
             <div className="space-y-2">
               {teams.map((t, i) => (
-                <div key={i} className="flex justify-between rounded-lg bg-white/5 px-3 py-2 text-sm">
+                <div key={t.Nome ?? i} className="flex justify-between rounded-lg bg-white/5 px-3 py-2 text-sm">
                   <span className="font-medium text-white">{t.Nome}</span>
                   <span className="text-[#b2b2b2]">{t.Projeto}</span>
                 </div>
@@ -109,7 +109,7 @@ export default function ImportPage() {
             <h3 className="mb-3 font-semibold text-white">Participantes ({participants.length})</h3>
             <div className="space-y-2">
               {participants.map((p, i) => (
-                <div key={i} className="flex justify-between rounded-lg bg-white/5 px-3 py-2 text-sm">
+                <div key={p.Nome ?? i} className="flex justify-between rounded-lg bg-white/5 px-3 py-2 text-sm">
                   <span className="font-medium text-white">{p.Nome}</span>
                   <span className="text-[#b2b2b2]">{p.Time}</span>
                 </div>

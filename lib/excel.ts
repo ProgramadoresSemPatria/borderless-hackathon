@@ -15,6 +15,7 @@ export function parseTeamsSheet(file: File): Promise<ImportedTeamRow[]> {
         reject(err)
       }
     }
+    reader.onerror = () => reject(new Error('Failed to read file'))
     reader.readAsArrayBuffer(file)
   })
 }
@@ -34,11 +35,13 @@ export function parseParticipantsSheet(file: File): Promise<ImportedParticipantR
         reject(err)
       }
     }
+    reader.onerror = () => reject(new Error('Failed to read file'))
     reader.readAsArrayBuffer(file)
   })
 }
 
 export function downloadTemplate(): void {
+  if (typeof window === 'undefined') return
   const wb = XLSX.utils.book_new()
 
   // Teams sheet
@@ -63,6 +66,7 @@ export function exportReport(
   participants: import('./types').Participant[],
   criteria: string[]
 ): void {
+  if (typeof window === 'undefined') return
   const wb = XLSX.utils.book_new()
 
   // Teams sheet
@@ -73,7 +77,7 @@ export function exportReport(
       t.position ?? '—',
       t.name,
       t.project,
-      t.members.join(', '),
+      t.members.map(id => participants.find(p => p.id === id)?.name ?? id).join(', '),
       ...criteria.map(c => t.scores[c] ?? 0),
       t.totalScore,
     ])
