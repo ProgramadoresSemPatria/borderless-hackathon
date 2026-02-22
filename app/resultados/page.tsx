@@ -15,7 +15,7 @@ export default function ResultadosPage() {
       <main className="mx-auto max-w-7xl px-6 pb-24 pt-32">
         <div className="mb-16 text-center">
           <h1 className="mb-4 text-5xl font-black leading-none tracking-tight text-white sm:text-7xl">
-            <GradientText>Resultados Finais</GradientText>
+            Resultados <span className="text-[#9810fa]">Finais</span>
           </h1>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#636363]">
             {hackathonConfig.edition} · {hackathonConfig.date}

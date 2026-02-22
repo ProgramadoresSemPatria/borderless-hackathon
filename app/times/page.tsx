@@ -1,6 +1,5 @@
 import { PublicNavbar } from '@/components/public/navbar'
 import { TiltedCard } from '@/components/animated/tilted-card'
-import { GradientText } from '@/components/animated/gradient-text'
 import { getRankedTeams, getTeamParticipants } from '@/lib/mock-data'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
@@ -21,7 +20,7 @@ export default function TimesPage() {
       <main className="relative mx-auto max-w-7xl px-6 pb-24 pt-32">
         <div className="mb-16 text-center">
           <h1 className="mb-4 text-5xl font-black leading-none tracking-tight text-white sm:text-7xl">
-            <GradientText>Times</GradientText>
+            Times
           </h1>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#636363]">Todos os times participantes</p>
         </div>

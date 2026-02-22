@@ -1,5 +1,4 @@
-import { AuroraBackground } from '@/components/animated/aurora-background'
-import { BlurText } from '@/components/animated/blur-text'
+import { HeroReveal } from '@/components/animated/hero-reveal'
 import { SpotlightCard } from '@/components/animated/spotlight-card'
 import { CountingNumber } from '@/components/animated/counting-number'
 import { PublicNavbar } from '@/components/public/navbar'
@@ -18,19 +17,46 @@ export default function HomePage() {
       <PublicNavbar />
       <main>
         {/* Hero */}
-        <AuroraBackground>
-          <section className="flex min-h-screen flex-col items-center justify-center px-6 pb-20 pt-32 text-center">
-            <span className="mb-4 inline-block rounded-full border border-[#9810fa]/30 bg-[#9810fa]/10 px-4 py-1.5 text-sm font-medium text-[#9810fa]">
+        <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pb-20 pt-32 text-center">
+          {/* Single directional glow — light source from above, not floating blobs */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 h-[70vh]"
+            style={{
+              background:
+                'radial-gradient(ellipse 90% 100% at 50% 0%, rgba(152,16,250,0.16) 0%, transparent 100%)',
+            }}
+          />
+
+          {/* Typographic watermark — depth through language, not through animation */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden select-none"
+          >
+            <span
+              className="font-black leading-none text-white"
+              style={{
+                fontSize: 'clamp(7rem, 32vw, 26rem)',
+                opacity: 0.03,
+                letterSpacing: '-0.04em',
+              }}
+            >
+              HACK
+            </span>
+          </div>
+
+          {/* Content */}
+          <div className="relative z-10 flex flex-col items-center">
+            <span className="mb-6 inline-block rounded-full border border-[#9810fa]/30 bg-[#9810fa]/10 px-4 py-1.5 text-sm font-medium text-[#9810fa]">
               {hackathonConfig.edition}
             </span>
 
-            <BlurText
+            <HeroReveal
               text={hackathonConfig.name}
-              className="mb-4 justify-center text-6xl font-black leading-none tracking-tight text-white sm:text-8xl lg:text-9xl"
-              animateBy="words"
+              className="mb-4 text-6xl font-black leading-none tracking-tight text-white sm:text-8xl lg:text-9xl"
             />
 
-            <p className="mb-8 max-w-xl text-lg text-[#b2b2b2]">
+            <p className="mb-10 max-w-xl text-lg text-[#b2b2b2]">
               {hackathonConfig.date} · Comunidade de Embaixadores Borderless
             </p>
 
@@ -63,8 +89,8 @@ export default function HomePage() {
               Ver Resultados
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
-          </section>
-        </AuroraBackground>
+          </div>
+        </section>
 
         {/* Highlights */}
         <section className="mx-auto max-w-7xl px-6 py-24">
