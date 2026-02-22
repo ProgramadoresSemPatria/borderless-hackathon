@@ -28,61 +28,75 @@ export default async function SlugPage({
       <PublicNavbar slug={slug} />
       <main>
         {/* Hero */}
-        <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pb-20 pt-32 text-center">
+        <section className="relative flex min-h-screen items-end overflow-hidden pb-20 pt-32">
+          {/* Event photo background */}
+          <div className="absolute inset-0">
+            <img
+              src="/brand/hackathon-event.webp"
+              alt=""
+              className="h-full w-full object-cover"
+              style={{ opacity: 0.18 }}
+            />
+            {/* Gradient fade: strong on left so text is readable, fades to photo on right */}
+            <div
+              className="absolute inset-0"
+              style={{ background: 'linear-gradient(105deg, #222 35%, rgba(34,34,34,0.6) 65%, rgba(34,34,34,0.2) 100%)' }}
+            />
+            {/* Bottom fade to section below */}
+            <div
+              className="absolute inset-x-0 bottom-0 h-48"
+              style={{ background: 'linear-gradient(to top, #222, transparent)' }}
+            />
+          </div>
+
           <HeroGrain />
 
-          <div className="relative z-10 flex flex-col items-center">
-            {/* Borderless logo mark */}
-            <div className="mb-8">
-              <img
-                src="/brand/cover-thumb.webp"
-                alt="Borderless"
-                width={56}
-                height={56}
-                className="rounded-full border border-white/10 object-cover"
-                style={{ width: 56, height: 56 }}
-              />
+          <div className="relative z-10 mx-auto w-full max-w-7xl px-6">
+            {/* Eyebrow */}
+            <div className="mb-6 flex items-center gap-4">
+              <img src="/favicon.ico" alt="Borderless" width={20} height={20} className="object-contain opacity-90" />
+              <span className="text-[10px] font-black uppercase tracking-[0.35em] text-[#636363]">Borderless Coding</span>
+              <span className="h-px w-6 bg-white/20" />
+              <span className="text-[10px] font-black uppercase tracking-[0.25em] text-[#9810fa]">{hackathon.edition}</span>
             </div>
 
-            <div className="mb-6 flex items-center justify-center gap-4">
-              <span className="h-px w-8 bg-[#9810fa]/50" />
-              <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#9810fa]">
-                {hackathon.edition}
-              </span>
-              <span className="h-px w-8 bg-[#9810fa]/50" />
-            </div>
-
+            {/* Title */}
             <HeroReveal
               text={hackathon.name}
-              className="mb-6 text-6xl font-black leading-none tracking-tight text-white sm:text-8xl lg:text-9xl"
+              className="mb-4 text-[clamp(3rem,10vw,8rem)] font-black leading-[0.88] tracking-tight text-white"
             />
 
-            <p className="mb-10 max-w-xl text-lg text-[#b2b2b2]">
-              {hackathon.date} · Comunidade de Embaixadores Borderless
+            {/* Date */}
+            <p className="mb-12 text-sm font-semibold uppercase tracking-[0.25em] text-[#636363]">
+              {hackathon.date}
             </p>
 
-            <div className="mb-12 grid w-full max-w-xs grid-cols-3 divide-x divide-white/10 border border-white/10">
-              <div className="px-4 py-5 text-center">
+            {/* Stats + CTA row */}
+            <div className="flex flex-wrap items-center gap-8 border-t border-white/[0.08] pt-8">
+              <div>
                 <div className="text-3xl font-black tabular-nums text-white">{participants.length}</div>
-                <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#636363]">Participantes</div>
+                <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#636363]">Participantes</div>
               </div>
-              <div className="px-4 py-5 text-center">
+              <div className="h-8 w-px bg-white/10" />
+              <div>
                 <div className="text-3xl font-black tabular-nums text-white">{teams.length}</div>
-                <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#636363]">Times</div>
+                <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#636363]">Times</div>
               </div>
-              <div className="px-4 py-5 text-center">
+              <div className="h-8 w-px bg-white/10" />
+              <div>
                 <div className="text-3xl font-black tabular-nums text-white">{hackathon.criteria.length}</div>
-                <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#636363]">Critérios</div>
+                <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#636363]">Critérios</div>
+              </div>
+              <div className="ml-auto">
+                <Link
+                  href={`/${slug}/resultados`}
+                  className="group inline-flex items-center gap-3 border border-[#9810fa] px-8 py-3.5 text-sm font-bold uppercase tracking-[0.1em] text-[#9810fa] transition-all duration-200 hover:bg-[#9810fa] hover:text-white active:scale-[0.98]"
+                >
+                  Ver Resultados
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
               </div>
             </div>
-
-            <Link
-              href={`/${slug}/resultados`}
-              className="group inline-flex items-center gap-3 border border-[#9810fa] px-8 py-3.5 text-sm font-bold uppercase tracking-[0.1em] text-[#9810fa] transition-all duration-200 hover:bg-[#9810fa] hover:text-white active:scale-[0.98]"
-            >
-              Ver Resultados
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
           </div>
         </section>
 

@@ -34,12 +34,12 @@ export default async function HomePage() {
 
         <div className="mb-10 flex items-center gap-3">
           <img
-            src="/brand/logo.png"
+            src="/favicon.ico"
             alt="Borderless"
-            width={28}
-            height={28}
+            width={24}
+            height={24}
             className="object-contain"
-            style={{ width: 28, height: 28 }}
+            style={{ width: 24, height: 24 }}
           />
           <span className="text-xs font-black uppercase tracking-[0.25em] text-[#636363]">Borderless Coding</span>
         </div>
