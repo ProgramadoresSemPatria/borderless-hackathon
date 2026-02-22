@@ -26,7 +26,7 @@ export function PublicNavbar() {
               key={link.href}
               href={link.href}
               className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                pathname === link.href
+                link.href === '/' ? pathname === '/' : pathname.startsWith(link.href)
                   ? 'bg-white/10 text-white'
                   : 'text-[#b2b2b2] hover:bg-white/5 hover:text-white'
               }`}
