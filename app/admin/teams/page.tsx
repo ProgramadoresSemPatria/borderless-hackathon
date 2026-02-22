@@ -5,7 +5,6 @@ import { TeamEditDialog } from '@/components/admin/team-edit-dialog'
 import { Button } from '@/components/ui/button'
 import type { Team } from '@/lib/types'
 import { Pencil } from 'lucide-react'
-import { GradientText } from '@/components/animated/gradient-text'
 
 export default function AdminTeamsPage() {
   const [teams, setTeams] = useState<Team[]>(initialTeams)
@@ -18,7 +17,7 @@ export default function AdminTeamsPage() {
   return (
     <div>
       <h1 className="mb-8 text-2xl font-bold text-white">
-        <GradientText>Times</GradientText>
+        Times
       </h1>
 
       <div className="glass overflow-hidden rounded-2xl">

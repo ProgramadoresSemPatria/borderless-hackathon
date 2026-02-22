@@ -1,5 +1,4 @@
 import { teams, participants, hackathonConfig, getRankedTeams, getRankedParticipants } from '@/lib/mock-data'
-import { GradientText } from '@/components/animated/gradient-text'
 import { Trophy, Users, Code2, Star, type LucideIcon } from 'lucide-react'
 
 type SummaryCard = {
@@ -30,7 +29,7 @@ export default function AdminDashboardPage() {
   return (
     <div>
       <h1 className="mb-2 text-2xl font-bold text-white">
-        <GradientText>Dashboard</GradientText>
+        Dashboard
       </h1>
       <p className="mb-8 text-[#b2b2b2]">{hackathonConfig.name} · {hackathonConfig.edition}</p>
 

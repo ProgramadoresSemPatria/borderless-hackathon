@@ -1,6 +1,5 @@
 import { PublicNavbar } from '@/components/public/navbar'
 import { ScoreBar } from '@/components/public/score-bar'
-import { GradientText } from '@/components/animated/gradient-text'
 import { getTeamById, getTeamParticipants, hackathonConfig } from '@/lib/mock-data'
 import { Badge } from '@/components/ui/badge'
 import { notFound } from 'next/navigation'
@@ -45,8 +44,8 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ id:
               </div>
             </div>
             <div className="text-right">
-              <div className="text-4xl font-black">
-                <GradientText>{team.totalScore.toFixed(2)}</GradientText>
+              <div className="text-4xl font-black text-[#9810fa]">
+                {team.totalScore.toFixed(2)}
               </div>
               <div className="text-sm text-[#636363]">pontuação final</div>
             </div>

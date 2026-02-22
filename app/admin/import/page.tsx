@@ -1,7 +1,6 @@
 'use client'
 import { useState, useRef } from 'react'
 import { parseTeamsSheet, parseParticipantsSheet, downloadTemplate } from '@/lib/excel'
-import { GradientText } from '@/components/animated/gradient-text'
 import { Button } from '@/components/ui/button'
 import type { ImportedTeamRow, ImportedParticipantRow } from '@/lib/types'
 import { Upload, Download, CheckCircle } from 'lucide-react'
@@ -42,7 +41,7 @@ export default function ImportPage() {
     <div className="max-w-3xl">
       <div className="mb-2 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-white">
-          <GradientText>Importar Dados</GradientText>
+          Importar Dados
         </h1>
         <Button
           variant="ghost"

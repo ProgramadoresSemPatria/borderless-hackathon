@@ -5,7 +5,6 @@ import { login } from '@/lib/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { GradientText } from '@/components/animated/gradient-text'
 import { Lock } from 'lucide-react'
 
 export default function AdminLoginPage() {
@@ -38,7 +37,7 @@ export default function AdminLoginPage() {
               <Lock className="h-6 w-6 text-[#9810fa]" />
             </div>
             <h1 className="text-2xl font-bold text-white">
-              <GradientText>Backoffice</GradientText>
+              Backoffice
             </h1>
             <p className="text-sm text-[#b2b2b2]">Borderless Hackathon</p>
           </div>

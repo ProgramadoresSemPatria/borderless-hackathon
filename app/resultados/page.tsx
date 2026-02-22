@@ -1,7 +1,6 @@
 import { PublicNavbar } from '@/components/public/navbar'
 import { Podium } from '@/components/public/podium'
 import { ScoreBar } from '@/components/public/score-bar'
-import { GradientText } from '@/components/animated/gradient-text'
 import { getRankedTeams, getRankedParticipants, hackathonConfig } from '@/lib/mock-data'
 import { Badge } from '@/components/ui/badge'
 
@@ -61,7 +60,7 @@ export default function ResultadosPage() {
                       'text-xl'
                     }`}>
                       {i === 0 ? (
-                        <GradientText>{team.totalScore.toFixed(2)}</GradientText>
+                        <span className="text-[#9810fa]">{team.totalScore.toFixed(2)}</span>
                       ) : i === 1 ? (
                         <span className="text-[#2debb1]">{team.totalScore.toFixed(2)}</span>
                       ) : (
@@ -122,7 +121,7 @@ export default function ResultadosPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`font-semibold ${i === 0 ? 'gradient-brand-text' : 'text-white'}`}>
+                        <span className={`font-semibold ${i === 0 ? 'text-[#9810fa]' : 'text-white'}`}>
                           {p.name}
                         </span>
                       </td>

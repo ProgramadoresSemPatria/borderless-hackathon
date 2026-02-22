@@ -1,6 +1,5 @@
 import { HeroReveal } from '@/components/animated/hero-reveal'
 import { SpotlightCard } from '@/components/animated/spotlight-card'
-import { CountingNumber } from '@/components/animated/counting-number'
 import { PublicNavbar } from '@/components/public/navbar'
 import { getRankedTeams, getRankedParticipants, hackathonConfig, participants, teams } from '@/lib/mock-data'
 import Link from 'next/link'
@@ -47,44 +46,44 @@ export default function HomePage() {
 
           {/* Content */}
           <div className="relative z-10 flex flex-col items-center">
-            <span className="mb-6 inline-block rounded-full border border-[#9810fa]/30 bg-[#9810fa]/10 px-4 py-1.5 text-sm font-medium text-[#9810fa]">
-              {hackathonConfig.edition}
-            </span>
+            {/* Edition label — editorial line motif, no pill */}
+            <div className="mb-6 flex items-center justify-center gap-4">
+              <span className="h-px w-8 bg-[#9810fa]/50" />
+              <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#9810fa]">
+                {hackathonConfig.edition}
+              </span>
+              <span className="h-px w-8 bg-[#9810fa]/50" />
+            </div>
 
             <HeroReveal
               text={hackathonConfig.name}
-              className="mb-4 text-6xl font-black leading-none tracking-tight text-white sm:text-8xl lg:text-9xl"
+              className="mb-6 text-6xl font-black leading-none tracking-tight text-white sm:text-8xl lg:text-9xl"
             />
 
             <p className="mb-10 max-w-xl text-lg text-[#b2b2b2]">
               {hackathonConfig.date} · Comunidade de Embaixadores Borderless
             </p>
 
-            {/* Stats — skyline hierarchy: one dominant, two supporting */}
-            <div className="mb-12 flex flex-wrap items-end justify-center gap-10">
-              <div className="flex flex-col items-center gap-1.5">
-                <span className="text-7xl font-black leading-none tabular-nums text-white">
-                  <CountingNumber value={participants.length} />
-                </span>
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#9810fa]">Participantes</span>
+            {/* Stats — data sheet, no animation */}
+            <div className="mb-12 grid w-full max-w-xs grid-cols-3 divide-x divide-white/10 border border-white/10">
+              <div className="px-4 py-5 text-center">
+                <div className="text-3xl font-black tabular-nums text-white">{participants.length}</div>
+                <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#636363]">Participantes</div>
               </div>
-              <div className="mb-4 flex flex-col items-center gap-1">
-                <span className="text-4xl font-black leading-none tabular-nums text-white/70">
-                  <CountingNumber value={teams.length} />
-                </span>
-                <span className="text-xs text-[#b2b2b2]">Times</span>
+              <div className="px-4 py-5 text-center">
+                <div className="text-3xl font-black tabular-nums text-white">{teams.length}</div>
+                <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#636363]">Times</div>
               </div>
-              <div className="mb-4 flex flex-col items-center gap-1">
-                <span className="text-4xl font-black leading-none tabular-nums text-white/70">
-                  <CountingNumber value={hackathonConfig.criteria.length} />
-                </span>
-                <span className="text-xs text-[#b2b2b2]">Critérios</span>
+              <div className="px-4 py-5 text-center">
+                <div className="text-3xl font-black tabular-nums text-white">{hackathonConfig.criteria.length}</div>
+                <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#636363]">Critérios</div>
               </div>
             </div>
 
+            {/* CTA — rectangular border, color flip on hover */}
             <Link
               href="/resultados"
-              className="group flex items-center gap-2 rounded-full bg-[#9810fa] px-10 py-4 text-base font-bold tracking-wide text-white transition-all duration-200 hover:bg-[#9810fa]/90 hover:shadow-2xl hover:shadow-[#9810fa]/40 active:scale-[0.98]"
+              className="group inline-flex items-center gap-3 border border-[#9810fa] px-8 py-3.5 text-sm font-bold uppercase tracking-[0.1em] text-[#9810fa] transition-all duration-200 hover:bg-[#9810fa] hover:text-white active:scale-[0.98]"
             >
               Ver Resultados
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -106,7 +105,7 @@ export default function HomePage() {
               </div>
               <h3 className="mb-1 text-xl font-bold text-white">{topTeam?.name}</h3>
               <p className="mb-3 text-sm text-[#b2b2b2]">{topTeam?.project}</p>
-              <div className="gradient-brand-text text-3xl font-extrabold">
+              <div className="text-3xl font-extrabold text-[#9810fa]">
                 {topTeam?.totalScore.toFixed(2)}
               </div>
             </SpotlightCard>
@@ -132,7 +131,7 @@ export default function HomePage() {
               <p className="mb-3 text-sm text-[#b2b2b2]">
                 {mvp?.metrics.totalPoints} pontos totais
               </p>
-              <div className="gradient-brand-text text-3xl font-extrabold">
+              <div className="text-3xl font-extrabold text-[#9810fa]">
                 {mvp?.metrics.attendance}% presença
               </div>
             </SpotlightCard>

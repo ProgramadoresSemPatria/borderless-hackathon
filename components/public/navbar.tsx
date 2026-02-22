@@ -16,7 +16,7 @@ export function PublicNavbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2">
           <span className="text-lg font-bold text-white">
-            Borderless <span className="gradient-brand-text">Hackathon</span>
+            Borderless <span className="text-[#9810fa]">Hackathon</span>
           </span>
         </Link>
 

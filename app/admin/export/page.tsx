@@ -1,7 +1,6 @@
 'use client'
 import { exportReport } from '@/lib/excel'
 import { teams, participants, hackathonConfig } from '@/lib/mock-data'
-import { GradientText } from '@/components/animated/gradient-text'
 import { Button } from '@/components/ui/button'
 import { Download, FileSpreadsheet } from 'lucide-react'
 
@@ -13,7 +12,7 @@ export default function ExportPage() {
   return (
     <div className="max-w-2xl">
       <h1 className="mb-2 text-2xl font-bold text-white">
-        <GradientText>Exportar Relatório</GradientText>
+        Exportar Relatório
       </h1>
       <p className="mb-8 text-sm text-[#b2b2b2]">
         Gera um arquivo .xlsx com o ranking completo de times e o leaderboard individual de participantes.

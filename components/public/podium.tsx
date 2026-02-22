@@ -1,7 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
 import type { Team } from '@/lib/types'
-import { GradientText } from '@/components/animated/gradient-text'
 
 interface PodiumProps {
   teams: Team[]
@@ -23,7 +22,7 @@ function PodiumBlock({ team, position, height }: { team: Team; position: 1 | 2 |
         <div className="text-xs text-[#b2b2b2]">{team.project}</div>
         <div className={`mt-1 font-extrabold tabular-nums ${position === 1 ? 'text-2xl' : 'text-base'}`}>
           {position === 1 ? (
-            <GradientText>{team.totalScore.toFixed(2)}</GradientText>
+            <span className="text-[#9810fa]">{team.totalScore.toFixed(2)}</span>
           ) : (
             <span className="text-[#2debb1]">{team.totalScore.toFixed(2)}</span>
           )}

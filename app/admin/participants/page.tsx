@@ -5,7 +5,6 @@ import { ParticipantEditDialog } from '@/components/admin/participant-edit-dialo
 import { Button } from '@/components/ui/button'
 import type { Participant } from '@/lib/types'
 import { Pencil } from 'lucide-react'
-import { GradientText } from '@/components/animated/gradient-text'
 
 export default function AdminParticipantsPage() {
   const [participants, setParticipants] = useState<Participant[]>(initialParticipants)
@@ -20,7 +19,7 @@ export default function AdminParticipantsPage() {
   return (
     <div>
       <h1 className="mb-8 text-2xl font-bold text-white">
-        <GradientText>Participantes</GradientText>
+        Participantes
       </h1>
 
       <div className="glass overflow-hidden rounded-2xl">
