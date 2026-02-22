@@ -5,10 +5,11 @@ interface HeroRevealProps {
   text: string
   className?: string
   stagger?: number
+  delay?: number
   align?: 'left' | 'center'
 }
 
-export function HeroReveal({ text, className = '', stagger = 0.1, align = 'center' }: HeroRevealProps) {
+export function HeroReveal({ text, className = '', stagger = 0.1, delay = 0, align = 'center' }: HeroRevealProps) {
   const words = text.split(' ')
 
   return (
@@ -21,7 +22,7 @@ export function HeroReveal({ text, className = '', stagger = 0.1, align = 'cente
             animate={{ y: 0 }}
             transition={{
               duration: 0.75,
-              delay: i * stagger,
+              delay: delay + i * stagger,
               ease: [0.16, 1, 0.3, 1],
             }}
           >

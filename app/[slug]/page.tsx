@@ -1,13 +1,9 @@
 import { fetchQuery } from 'convex/nextjs'
 import { api } from '@/convex/_generated/api'
 import { notFound } from 'next/navigation'
-import { HeroGrain } from '@/components/animated/hero-grain'
-import { HeroReveal } from '@/components/animated/hero-reveal'
-import { CountingNumber } from '@/components/animated/counting-number'
+import { HeroSection } from '@/components/public/hero-section'
 import { PublicNavbar } from '@/components/public/navbar'
 import { FadeUp } from '@/components/animated/fade-up'
-import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
 
 export default async function SlugPage({
   params,
@@ -29,105 +25,15 @@ export default async function SlugPage({
     <>
       <PublicNavbar slug={slug} />
       <main>
-        {/* ── Hero ───────────────────────────────────────────────────── */}
-        <section className="relative flex min-h-screen items-end overflow-hidden pb-16">
-          <HeroGrain />
-
-          {/* Vignette: edges darker than center */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                'radial-gradient(ellipse 80% 60% at 50% 50%, transparent 40%, rgba(34,34,34,0.6) 100%)',
-            }}
-          />
-
-          {/* Logo mark — large, right side */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute right-0 top-0 hidden h-full items-center justify-end pr-8 lg:flex xl:pr-16"
-          >
-            <img
-              src="/brand/borderless-logo.svg"
-              alt=""
-              className="w-auto"
-              style={{ height: 'min(58vh, 520px)' }}
-            />
-          </div>
-
-          <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pb-2 pt-32 lg:max-w-[56%]">
-            {/* Eyebrow */}
-            <div className="mb-8 flex items-center gap-4">
-              <img
-                src="/brand/icon.png"
-                alt="Borderless"
-                width={32}
-                height={32}
-                className="object-contain"
-              />
-              <span className="h-px w-8 bg-white/[0.12]" />
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#636363]">
-                Borderless Coding
-              </span>
-              <span className="h-px w-8 bg-white/[0.12]" />
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9810fa]">
-                {hackathon.edition}
-              </span>
-            </div>
-
-            {/* Title */}
-            <HeroReveal
-              text={hackathon.name}
-              align="left"
-              className="mb-4 text-[clamp(2.75rem,9vw,7.5rem)] font-black leading-[0.88] tracking-tight text-white"
-            />
-
-            {/* Date */}
-            <p className="mb-16 text-xs font-bold uppercase tracking-[0.3em] text-[#636363]">
-              {hackathon.date}
-            </p>
-
-            {/* Stats + CTA */}
-            <div className="flex flex-wrap items-center gap-8 border-t border-white/[0.08] pt-8">
-              <div>
-                <div className="text-3xl font-black tabular-nums text-white">
-                  <CountingNumber value={participants.length} />
-                </div>
-                <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#636363]">
-                  Participantes
-                </div>
-              </div>
-              <div className="h-8 w-px bg-white/[0.08]" />
-              <div>
-                <div className="text-3xl font-black tabular-nums text-white">
-                  <CountingNumber value={teams.length} />
-                </div>
-                <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#636363]">
-                  Times
-                </div>
-              </div>
-              <div className="h-8 w-px bg-white/[0.08]" />
-              <div>
-                <div className="text-3xl font-black tabular-nums text-white">
-                  <CountingNumber value={hackathon.criteria.length} />
-                </div>
-                <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#636363]">
-                  Critérios
-                </div>
-              </div>
-              <div className="ml-auto">
-                <Link
-                  href={`/${slug}/resultados`}
-                  className="group inline-flex items-center gap-3 border border-[#9810fa] px-8 py-4 text-sm font-bold uppercase tracking-[0.1em] text-[#9810fa] transition-all duration-200 hover:bg-[#9810fa] hover:text-white active:scale-[0.98]"
-                >
-                  Ver Resultados
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
+        <HeroSection
+          slug={slug}
+          name={hackathon.name}
+          edition={hackathon.edition}
+          date={hackathon.date}
+          participantCount={participants.length}
+          teamCount={teams.length}
+          criteriaCount={hackathon.criteria.length}
+        />
 
         {/* ── Highlights ─────────────────────────────────────────────── */}
         <section className="mx-auto max-w-7xl px-6 py-24">
