@@ -14,14 +14,14 @@ export default function ExportPage() {
       <h1 className="mb-2 text-2xl font-bold text-white">
         Exportar Relatório
       </h1>
-      <p className="mb-8 text-sm text-[#b2b2b2]">
+      <p className="mb-8 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#636363]">
         Gera um arquivo .xlsx com o ranking completo de times e o leaderboard individual de participantes.
       </p>
 
-      <div className="glass rounded-2xl p-8">
+      <div className="rounded-xl border border-white/[0.08] bg-[#2a2a2b] p-8">
         <div className="mb-6 flex items-start gap-4">
-          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-[#2debb1]/20">
-            <FileSpreadsheet className="h-6 w-6 text-[#2debb1]" aria-hidden="true" />
+          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded border border-white/15 bg-white/[0.05]">
+            <FileSpreadsheet className="h-6 w-6 text-[#b2b2b2]" aria-hidden="true" />
           </div>
           <div>
             <h3 className="mb-1 font-semibold text-white">relatorio-hackathon.xlsx</h3>
@@ -33,11 +33,11 @@ export default function ExportPage() {
         </div>
 
         <div className="mb-6 grid grid-cols-2 gap-3 text-sm">
-          <div className="rounded-xl bg-white/5 p-3">
+          <div className="rounded border border-white/[0.08] bg-white/[0.03] p-3">
             <div className="font-semibold text-white">{teams.length} times</div>
             <div className="text-[#636363]">com {hackathonConfig.criteria.length} critérios</div>
           </div>
-          <div className="rounded-xl bg-white/5 p-3">
+          <div className="rounded border border-white/[0.08] bg-white/[0.03] p-3">
             <div className="font-semibold text-white">{participants.length} participantes</div>
             <div className="text-[#636363]">com métricas individuais</div>
           </div>
@@ -45,7 +45,7 @@ export default function ExportPage() {
 
         <Button
           onClick={handleExport}
-          className="w-full gap-2 bg-[#2debb1] hover:bg-[#24c994] text-[#111] font-bold py-6 text-base"
+          className="w-full gap-2 bg-[#9810fa] hover:bg-[#9810fa]/90 text-white font-bold rounded-lg py-3 text-base"
         >
           <Download className="h-5 w-5" aria-hidden="true" />
           Exportar Relatório Excel

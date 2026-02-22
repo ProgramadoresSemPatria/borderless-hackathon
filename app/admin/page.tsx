@@ -31,20 +31,20 @@ export default function AdminLoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <div className="glass rounded-2xl p-8">
+        <div className="rounded-xl border border-white/[0.08] bg-[#2a2a2b] p-8">
           <div className="mb-8 flex flex-col items-center gap-3 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#9810fa]/20">
-              <Lock className="h-6 w-6 text-[#9810fa]" />
+            <div className="flex h-10 w-10 items-center justify-center rounded border border-[#9810fa]/30 bg-[#9810fa]/10">
+              <Lock className="h-5 w-5 text-[#9810fa]" />
             </div>
             <h1 className="text-2xl font-bold text-white">
               Backoffice
             </h1>
-            <p className="text-sm text-[#b2b2b2]">Borderless Hackathon</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#636363]">Borderless Hackathon</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-[#b2b2b2]">Senha</Label>
+              <Label htmlFor="password" className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#636363]">Senha</Label>
               <Input
                 id="password"
                 type="password"
@@ -57,13 +57,13 @@ export default function AdminLoginPage() {
             </div>
 
             {error && (
-              <p className="rounded-lg bg-red-500/10 p-3 text-sm text-red-400">{error}</p>
+              <p className="rounded border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-400">{error}</p>
             )}
 
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#9810fa] hover:bg-[#b040ff] text-white font-semibold"
+              className="w-full bg-[#9810fa] hover:bg-[#9810fa]/90 text-white font-semibold"
             >
               {loading ? 'Entrando...' : 'Entrar'}
             </Button>

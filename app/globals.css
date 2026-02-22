@@ -130,6 +130,10 @@ body {
   border-left: 3px solid #9810fa;
 }
 
+.data-card { background: var(--surface); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.75rem; }
+.data-card-featured { background: rgba(152,16,250,0.05); border: 1px solid rgba(152,16,250,0.20); border-left: 2px solid #9810fa; border-radius: 0.75rem; }
+.data-card-second { background: var(--surface); border: 1px solid rgba(255,255,255,0.08); border-left: 2px solid #2debb1; border-radius: 0.75rem; }
+
 /* Custom scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--background); }

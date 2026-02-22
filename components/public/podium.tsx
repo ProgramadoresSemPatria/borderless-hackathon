@@ -6,39 +6,66 @@ interface PodiumProps {
   teams: Team[]
 }
 
-const MEDAL: Record<1 | 2 | 3, string> = { 1: '🥇', 2: '🥈', 3: '🥉' }
+const RANK_COLOR: Record<1 | 2 | 3, string> = {
+  1: '#9810fa',
+  2: '#2debb1',
+  3: 'rgba(255,255,255,0.55)',
+}
 
-function PodiumBlock({ team, position, height }: { team: Team; position: 1 | 2 | 3; height: string }) {
+function PodiumBlock({
+  team,
+  position,
+  barHeight,
+}: {
+  team: Team
+  position: 1 | 2 | 3
+  barHeight: number
+}) {
+  const color = RANK_COLOR[position]
+  const isFirst = position === 1
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 32 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: position * 0.15 }}
-      className="flex flex-col items-center gap-3"
+      transition={{ duration: 0.5, delay: position * 0.12, ease: 'easeOut' }}
+      className={`flex flex-col overflow-hidden rounded-xl border border-white/[0.08] ${isFirst ? 'w-44' : 'w-36'}`}
     >
-      <div className="text-center">
-        <div className={`mb-1 ${position === 1 ? 'text-4xl' : 'text-2xl'}`}>{MEDAL[position]}</div>
-        <div className={`font-black leading-tight text-white ${position === 1 ? 'text-lg' : 'text-sm'}`}>{team.name}</div>
-        <div className="text-xs text-[#b2b2b2]">{team.project}</div>
-        <div className={`mt-1 font-extrabold tabular-nums ${position === 1 ? 'text-2xl' : 'text-base'}`}>
-          {position === 1 ? (
-            <span className="text-[#9810fa]">{team.totalScore.toFixed(2)}</span>
-          ) : (
-            <span className="text-[#2debb1]">{team.totalScore.toFixed(2)}</span>
-          )}
+      {/* Info */}
+      <div className="bg-[#2a2a2b] px-4 py-4 text-center">
+        <div className={`font-black leading-tight text-white ${isFirst ? 'text-base' : 'text-sm'}`}>
+          {team.name}
+        </div>
+        <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#636363]">
+          {team.project}
+        </div>
+        <div
+          className={`mt-2 font-extrabold tabular-nums ${isFirst ? 'text-2xl' : 'text-lg'}`}
+          style={{ color }}
+        >
+          {team.totalScore.toFixed(2)}
         </div>
       </div>
+
+      {/* Platform */}
       <div
-        className={`flex items-center justify-center rounded-t-lg font-black text-white ${
-          position === 1
-            ? 'w-32 text-3xl bg-gradient-to-b from-[#9810fa] to-[#6c0bb8]'
-            : position === 2
-            ? 'w-24 text-xl bg-[#2a2a2b] border border-white/20'
-            : 'w-24 text-xl bg-[#232322] border border-white/10'
-        }`}
-        style={{ height }}
+        className="flex items-center justify-center border-t border-white/[0.06]"
+        style={{
+          height: `${barHeight}px`,
+          backgroundColor: `${color}0d`,
+        }}
       >
-        {position}
+        <span
+          className="select-none font-black tabular-nums"
+          style={{
+            color,
+            fontSize: isFirst ? '4rem' : '2.75rem',
+            lineHeight: 1,
+            opacity: 0.2,
+          }}
+        >
+          {position}
+        </span>
       </div>
     </motion.div>
   )
@@ -48,10 +75,10 @@ export function Podium({ teams }: PodiumProps) {
   const [first, second, third] = [teams[0], teams[1], teams[2]]
 
   return (
-    <div className="flex items-end justify-center gap-4">
-      {second && <PodiumBlock team={second} position={2} height="80px" />}
-      {first && <PodiumBlock team={first} position={1} height="120px" />}
-      {third && <PodiumBlock team={third} position={3} height="60px" />}
+    <div className="flex items-end justify-center gap-3">
+      {second && <PodiumBlock team={second} position={2} barHeight={80} />}
+      {first && <PodiumBlock team={first} position={1} barHeight={120} />}
+      {third && <PodiumBlock team={third} position={3} barHeight={56} />}
     </div>
   )
 }

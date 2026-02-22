@@ -15,8 +15,8 @@ export function PublicNavbar() {
     <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-[#222]/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-lg font-bold text-white">
-            Borderless <span className="text-[#9810fa]">Hackathon</span>
+          <span className="text-sm font-black uppercase tracking-[0.12em] text-white">
+            Borderless · Hackathon
           </span>
         </Link>
 
@@ -25,10 +25,10 @@ export function PublicNavbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                link.href === '/' ? pathname === '/' : pathname.startsWith(link.href)
-                  ? 'bg-white/10 text-white'
-                  : 'text-[#b2b2b2] hover:bg-white/5 hover:text-white'
+              className={`text-xs font-semibold uppercase tracking-[0.08em] rounded-lg px-3 py-1.5 transition-colors ${
+                (link.href === '/' ? pathname === '/' : pathname.startsWith(link.href))
+                  ? 'bg-white/12 text-white font-semibold'
+                  : 'text-white/50 hover:bg-white/10 hover:text-white'
               }`}
             >
               {link.label}

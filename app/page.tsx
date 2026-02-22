@@ -1,5 +1,4 @@
 import { HeroReveal } from '@/components/animated/hero-reveal'
-import { SpotlightCard } from '@/components/animated/spotlight-card'
 import { PublicNavbar } from '@/components/public/navbar'
 import { getRankedTeams, getRankedParticipants, hackathonConfig, participants, teams } from '@/lib/mock-data'
 import Link from 'next/link'
@@ -9,6 +8,7 @@ export default function HomePage() {
   const rankedTeams = getRankedTeams()
   const rankedParticipants = getRankedParticipants()
   const topTeam = rankedTeams[0]
+  const secondTeam = rankedTeams[1]
   const mvp = rankedParticipants[0]
 
   return (
@@ -17,7 +17,6 @@ export default function HomePage() {
       <main>
         {/* Hero */}
         <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pb-20 pt-32 text-center">
-          {/* Single directional glow — light source from above, not floating blobs */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-x-0 top-0 h-[70vh]"
@@ -26,8 +25,6 @@ export default function HomePage() {
                 'radial-gradient(ellipse 90% 100% at 50% 0%, rgba(152,16,250,0.16) 0%, transparent 100%)',
             }}
           />
-
-          {/* Typographic watermark — depth through language, not through animation */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden select-none"
@@ -44,9 +41,7 @@ export default function HomePage() {
             </span>
           </div>
 
-          {/* Content */}
           <div className="relative z-10 flex flex-col items-center">
-            {/* Edition label — editorial line motif, no pill */}
             <div className="mb-6 flex items-center justify-center gap-4">
               <span className="h-px w-8 bg-[#9810fa]/50" />
               <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#9810fa]">
@@ -64,7 +59,6 @@ export default function HomePage() {
               {hackathonConfig.date} · Comunidade de Embaixadores Borderless
             </p>
 
-            {/* Stats — data sheet, no animation */}
             <div className="mb-12 grid w-full max-w-xs grid-cols-3 divide-x divide-white/10 border border-white/10">
               <div className="px-4 py-5 text-center">
                 <div className="text-3xl font-black tabular-nums text-white">{participants.length}</div>
@@ -80,7 +74,6 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* CTA — rectangular border, color flip on hover */}
             <Link
               href="/resultados"
               className="group inline-flex items-center gap-3 border border-[#9810fa] px-8 py-3.5 text-sm font-bold uppercase tracking-[0.1em] text-[#9810fa] transition-all duration-200 hover:bg-[#9810fa] hover:text-white active:scale-[0.98]"
@@ -97,44 +90,79 @@ export default function HomePage() {
             Destaques do Evento
           </p>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {/* 1st place */}
-            <SpotlightCard className="p-6" spotlightColor="rgba(152,16,250,0.2)">
-              <div className="mb-2 text-xs font-semibold uppercase tracking-widest text-[#9810fa]">
-                🥇 1º Lugar
+          {/* 1st place — full width */}
+          <div className="mb-3">
+            <div className="relative overflow-hidden rounded-xl border border-white/[0.08] bg-[#2a2a2b] p-8 transition-colors hover:border-white/[0.15]">
+              {/* Position watermark */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 select-none font-black tabular-nums text-white"
+                style={{ fontSize: '9rem', opacity: 0.04, lineHeight: 1 }}
+              >
+                1
+              </span>
+              <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363]">1º Lugar</div>
+                  <h3 className="text-3xl font-black leading-tight text-white sm:text-4xl">{topTeam?.name}</h3>
+                  <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#636363]">{topTeam?.project}</p>
+                  {topTeam?.description && (
+                    <p className="mt-3 line-clamp-2 max-w-lg text-sm text-[#b2b2b2]">{topTeam.description}</p>
+                  )}
+                </div>
+                <div className="flex-shrink-0 sm:text-right">
+                  <div className="text-5xl font-black tabular-nums text-[#9810fa]">
+                    {topTeam?.totalScore.toFixed(2)}
+                  </div>
+                  <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#636363]">pontuação final</div>
+                </div>
               </div>
-              <h3 className="mb-1 text-xl font-bold text-white">{topTeam?.name}</h3>
-              <p className="mb-3 text-sm text-[#b2b2b2]">{topTeam?.project}</p>
-              <div className="text-3xl font-extrabold text-[#9810fa]">
-                {topTeam?.totalScore.toFixed(2)}
-              </div>
-            </SpotlightCard>
+            </div>
+          </div>
 
+          {/* 2nd place + MVP */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {/* 2nd place */}
-            <SpotlightCard className="p-6" spotlightColor="rgba(45,235,177,0.2)">
-              <div className="mb-2 text-xs font-semibold uppercase tracking-widest text-[#2debb1]">
-                🥈 2º Lugar
+            <div className="relative overflow-hidden rounded-xl border border-white/[0.08] bg-[#2a2a2b] p-6 transition-colors hover:border-white/[0.15]">
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 select-none font-black tabular-nums text-white"
+                style={{ fontSize: '6rem', opacity: 0.04, lineHeight: 1 }}
+              >
+                2
+              </span>
+              <div className="relative">
+                <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363]">2º Lugar</div>
+                <h3 className="text-2xl font-black leading-tight text-white">{secondTeam?.name}</h3>
+                <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#636363]">{secondTeam?.project}</p>
+                {secondTeam?.description && (
+                  <p className="mt-2 line-clamp-2 text-sm text-[#b2b2b2]">{secondTeam.description}</p>
+                )}
+                <div className="mt-4 border-t border-white/[0.06] pt-4">
+                  <div className="text-3xl font-black tabular-nums text-[#2debb1]">
+                    {secondTeam?.totalScore.toFixed(2)}
+                  </div>
+                  <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#636363]">pontuação final</div>
+                </div>
               </div>
-              <h3 className="mb-1 text-xl font-bold text-white">{rankedTeams[1]?.name}</h3>
-              <p className="mb-3 text-sm text-[#b2b2b2]">{rankedTeams[1]?.project}</p>
-              <div className="text-3xl font-extrabold text-[#2debb1]">
-                {rankedTeams[1]?.totalScore.toFixed(2)}
-              </div>
-            </SpotlightCard>
+            </div>
 
-            {/* MVP Ambassador */}
-            <SpotlightCard className="p-6" spotlightColor="rgba(152,16,250,0.15)">
-              <div className="mb-2 text-xs font-semibold uppercase tracking-widest text-[#9810fa]">
-                ⭐ Embaixador MVP
+            {/* MVP */}
+            <div className="rounded-xl border border-white/[0.08] bg-[#2a2a2b] p-6 transition-colors hover:border-white/[0.15]">
+              <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363]">Embaixador MVP</div>
+              <h3 className="text-2xl font-black leading-tight text-white">{mvp?.name}</h3>
+              <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#636363]">Maior pontuação individual</p>
+              <div className="mt-4 grid grid-cols-2 gap-4 border-t border-white/[0.06] pt-4">
+                <div>
+                  <div className="text-2xl font-black tabular-nums text-[#9810fa]">{mvp?.metrics.totalPoints}</div>
+                  <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#636363]">Pontos</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-black tabular-nums text-white">{mvp?.metrics.attendance}%</div>
+                  <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#636363]">Presença</div>
+                </div>
               </div>
-              <h3 className="mb-1 text-xl font-bold text-white">{mvp?.name}</h3>
-              <p className="mb-3 text-sm text-[#b2b2b2]">
-                {mvp?.metrics.totalPoints} pontos totais
-              </p>
-              <div className="text-3xl font-extrabold text-[#9810fa]">
-                {mvp?.metrics.attendance}% presença
-              </div>
-            </SpotlightCard>
+            </div>
           </div>
         </section>
       </main>

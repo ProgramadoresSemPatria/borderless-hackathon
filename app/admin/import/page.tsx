@@ -31,7 +31,6 @@ export default function ImportPage() {
   }
 
   function handleConfirm() {
-    // In a real app, this would call an API. For now, just show success.
     setSuccess(true)
     setTeams([])
     setParticipants([])
@@ -46,13 +45,13 @@ export default function ImportPage() {
         <Button
           variant="ghost"
           onClick={downloadTemplate}
-          className="gap-2 text-[#b2b2b2] hover:text-white"
+          className="gap-2 rounded text-xs font-semibold uppercase tracking-[0.08em] text-[#636363] hover:bg-white/10 hover:text-white"
         >
           <Download className="h-4 w-4" aria-hidden="true" />
           Baixar Template
         </Button>
       </div>
-      <p className="mb-8 text-sm text-[#b2b2b2]">
+      <p className="mb-8 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#636363]">
         Importe a planilha com times e participantes. Use o template acima para garantir o formato correto.
       </p>
 
@@ -61,7 +60,7 @@ export default function ImportPage() {
         role="button"
         tabIndex={0}
         aria-label="Área de upload — arraste um arquivo .xlsx ou clique para selecionar"
-        className="glass mb-6 flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-white/20 p-12 transition-colors hover:border-[#9810fa]/50 focus:outline-none focus:ring-2 focus:ring-[#9810fa]"
+        className="mb-6 flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-white/20 bg-[#2a2a2b] p-12 transition-colors hover:bg-[#9810fa]/[0.03] hover:border-[#9810fa]/50 focus:outline-none focus:ring-2 focus:ring-[#9810fa]"
         onDrop={handleDrop}
         onDragOver={e => e.preventDefault()}
         onClick={() => fileRef.current?.click()}
@@ -79,11 +78,11 @@ export default function ImportPage() {
       </div>
 
       {error && (
-        <div role="alert" className="mb-4 rounded-xl bg-red-500/10 p-4 text-sm text-red-400">{error}</div>
+        <div role="alert" className="mb-4 rounded border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-400">{error}</div>
       )}
 
       {success && (
-        <div role="status" className="mb-4 flex items-center gap-2 rounded-xl bg-[#2debb1]/10 p-4 text-sm text-[#2debb1]">
+        <div role="status" className="mb-4 flex items-center gap-2 rounded border border-green-500/20 bg-green-500/10 p-3 text-xs text-green-400">
           <CheckCircle className="h-4 w-4" aria-hidden="true" />
           Dados importados com sucesso!
         </div>
@@ -92,11 +91,11 @@ export default function ImportPage() {
       {/* Preview */}
       {teams.length > 0 && (
         <div className="space-y-6">
-          <div className="glass rounded-2xl p-5">
-            <h3 className="mb-3 font-semibold text-white">Times ({teams.length})</h3>
-            <div className="space-y-2">
+          <div className="rounded-xl border border-white/[0.08] bg-[#2a2a2b] p-5">
+            <h3 className="mb-3 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#636363]">Times ({teams.length})</h3>
+            <div>
               {teams.map((t, i) => (
-                <div key={`${t.Nome ?? ''}-${i}`} className="flex justify-between rounded-lg bg-white/5 px-3 py-2 text-sm">
+                <div key={`${t.Nome ?? ''}-${i}`} className="flex justify-between border-b border-white/[0.06] py-2.5 last:border-0 text-sm">
                   <span className="font-medium text-white">{t.Nome}</span>
                   <span className="text-[#b2b2b2]">{t.Projeto}</span>
                 </div>
@@ -104,11 +103,11 @@ export default function ImportPage() {
             </div>
           </div>
 
-          <div className="glass rounded-2xl p-5">
-            <h3 className="mb-3 font-semibold text-white">Participantes ({participants.length})</h3>
-            <div className="space-y-2">
+          <div className="rounded-xl border border-white/[0.08] bg-[#2a2a2b] p-5">
+            <h3 className="mb-3 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#636363]">Participantes ({participants.length})</h3>
+            <div>
               {participants.map((p, i) => (
-                <div key={`${p.Nome ?? ''}-${i}`} className="flex justify-between rounded-lg bg-white/5 px-3 py-2 text-sm">
+                <div key={`${p.Nome ?? ''}-${i}`} className="flex justify-between border-b border-white/[0.06] py-2.5 last:border-0 text-sm">
                   <span className="font-medium text-white">{p.Nome}</span>
                   <span className="text-[#b2b2b2]">{p.Time}</span>
                 </div>
@@ -118,7 +117,7 @@ export default function ImportPage() {
 
           <Button
             onClick={handleConfirm}
-            className="w-full bg-[#9810fa] hover:bg-[#b040ff] text-white font-semibold py-6"
+            className="w-full bg-[#9810fa] hover:bg-[#9810fa]/90 text-white font-semibold rounded-lg py-3"
           >
             Confirmar Importação
           </Button>
