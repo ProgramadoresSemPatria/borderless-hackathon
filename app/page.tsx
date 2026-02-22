@@ -21,19 +21,30 @@ export default async function HomePage() {
       </div>
 
       <div className="relative z-10 mx-auto max-w-4xl px-6 py-24 pt-32">
-        <div className="mb-4 flex items-center gap-3">
+        {/* Editorial header image */}
+        <div className="mb-12 overflow-hidden rounded-2xl border border-white/[0.08]" style={{ aspectRatio: '21/9' }}>
           <img
-            src="/brand/cover-thumb.webp"
-            alt="Borderless"
-            width={40}
-            height={40}
-            className="rounded-full border border-white/10 object-cover"
-            style={{ width: 40, height: 40 }}
+            src="/brand/hackathon-event.webp"
+            alt="Borderless Hackathon"
+            width={1200}
+            height={514}
+            className="h-full w-full object-cover"
           />
-          <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#636363]">Borderless</span>
         </div>
-        <h1 className="mb-2 text-4xl font-black leading-none tracking-tight text-white sm:text-6xl">Hackathons</h1>
-        <p className="mb-16 text-sm text-[#636363]">Todas as edições do hackathon da comunidade.</p>
+
+        <div className="mb-10 flex items-center gap-3">
+          <img
+            src="/brand/logo.png"
+            alt="Borderless"
+            width={28}
+            height={28}
+            className="object-contain"
+            style={{ width: 28, height: 28 }}
+          />
+          <span className="text-xs font-black uppercase tracking-[0.25em] text-[#636363]">Borderless Coding</span>
+        </div>
+        <h1 className="mb-3 text-5xl font-black leading-none tracking-tight text-white sm:text-7xl">Hackathons</h1>
+        <p className="mb-16 text-sm font-semibold uppercase tracking-[0.2em] text-[#636363]">{hackathons.length} {hackathons.length === 1 ? 'edição' : 'edições'}</p>
 
         {hackathons.length === 0 ? (
           <p className="text-[#636363]">Nenhum hackathon registrado ainda.</p>

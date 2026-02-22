@@ -36,16 +36,10 @@ export const getTeamsRanked = query({
           .withIndex('by_team', (q) => q.eq('teamId', team._id))
           .collect()
 
-        const scoreMap: Record<string, number> = {}
-        for (const s of scores) {
-          scoreMap[s.criteriaKey] = s.value
-        }
-
-        const values = Object.values(scoreMap)
         const totalScore =
-          values.length > 0
+          scores.length > 0
             ? parseFloat(
-                (values.reduce((sum, v) => sum + v, 0) / values.length).toFixed(3),
+                (scores.reduce((sum, s) => sum + s.value, 0) / scores.length).toFixed(3),
               )
             : 0
 
@@ -54,7 +48,9 @@ export const getTeamsRanked = query({
           .withIndex('by_team', (q) => q.eq('teamId', team._id))
           .collect()
 
-        return { ...team, scores: scoreMap, totalScore, memberNames: members.map(m => m.name) }
+        const scoresArray = scores.map(s => ({ criteriaKey: s.criteriaKey, value: s.value }))
+
+        return { ...team, scores: scoresArray, totalScore, memberNames: members.map(m => m.name) }
       }),
     )
 
@@ -89,16 +85,10 @@ export const getTeam = query({
       .withIndex('by_team', (q) => q.eq('teamId', teamId))
       .collect()
 
-    const scoreMap: Record<string, number> = {}
-    for (const s of scores) {
-      scoreMap[s.criteriaKey] = s.value
-    }
-
-    const values = Object.values(scoreMap)
     const totalScore =
-      values.length > 0
+      scores.length > 0
         ? parseFloat(
-            (values.reduce((sum, v) => sum + v, 0) / values.length).toFixed(3),
+            (scores.reduce((sum, s) => sum + s.value, 0) / scores.length).toFixed(3),
           )
         : 0
 
@@ -107,6 +97,8 @@ export const getTeam = query({
       .withIndex('by_team', (q) => q.eq('teamId', teamId))
       .collect()
 
-    return { ...team, scores: scoreMap, totalScore, members }
+    const scoresArray = scores.map(s => ({ criteriaKey: s.criteriaKey, value: s.value }))
+
+    return { ...team, scores: scoresArray, totalScore, members }
   },
 })

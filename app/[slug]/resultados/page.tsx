@@ -100,7 +100,7 @@ export default async function SlugResultadosPage({
                     <ScoreBar
                       key={criterion}
                       label={criterion}
-                      value={team.scores[criterion] ?? 0}
+                      value={team.scores.find(s => s.criteriaKey === criterion)?.value ?? 0}
                     />
                   ))}
                 </div>
