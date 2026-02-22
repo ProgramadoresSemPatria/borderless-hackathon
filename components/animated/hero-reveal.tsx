@@ -5,13 +5,14 @@ interface HeroRevealProps {
   text: string
   className?: string
   stagger?: number
+  align?: 'left' | 'center'
 }
 
-export function HeroReveal({ text, className = '', stagger = 0.1 }: HeroRevealProps) {
+export function HeroReveal({ text, className = '', stagger = 0.1, align = 'center' }: HeroRevealProps) {
   const words = text.split(' ')
 
   return (
-    <div className={`flex flex-wrap justify-center gap-x-[0.3em] gap-y-0 ${className}`}>
+    <div className={`flex flex-wrap ${align === 'left' ? 'justify-start' : 'justify-center'} gap-x-[0.3em] gap-y-0 ${className}`}>
       {words.map((word, i) => (
         <div key={i} className="overflow-hidden">
           <motion.span

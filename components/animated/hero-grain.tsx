@@ -6,8 +6,17 @@ export function HeroGrain() {
 
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 select-none overflow-hidden">
-      {/* Film grain only — no spotlight glows */}
-      <svg className="absolute inset-0 h-full w-full opacity-[0.05]" xmlns="http://www.w3.org/2000/svg">
+      {/* Dot grid */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)',
+          backgroundSize: '32px 32px',
+        }}
+      />
+
+      {/* Film grain */}
+      <svg className="absolute inset-0 h-full w-full opacity-[0.045]" xmlns="http://www.w3.org/2000/svg">
         <filter id={filterId} x="0%" y="0%" width="100%" height="100%">
           <feTurbulence
             type="fractalNoise"
