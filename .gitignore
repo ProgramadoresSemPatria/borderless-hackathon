@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# convex local dev data (never commit — contains local DB state)
+.convex/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
