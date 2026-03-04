@@ -154,3 +154,68 @@ export const upsertScore = mutation({
     }
   },
 })
+
+export const bulkImport = mutation({
+  args: {
+    hackathonId: v.id('hackathons'),
+    clearExisting: v.boolean(),
+    teams: v.array(v.object({
+      name: v.string(),
+      project: v.string(),
+      description: v.optional(v.string()),
+      tags: v.array(v.string()),
+      members: v.array(v.object({
+        name: v.string(),
+        metrics: v.object({
+          tasksCompleted: v.number(),
+          attendance: v.number(),
+          contributions: v.number(),
+          totalPoints: v.number(),
+        }),
+      })),
+    })),
+  },
+  handler: async (ctx, { hackathonId, clearExisting, teams }) => {
+    if (clearExisting) {
+      const existing = await ctx.db
+        .query('teams')
+        .withIndex('by_hackathon', (q) => q.eq('hackathonId', hackathonId))
+        .collect()
+      for (const team of existing) {
+        const parts = await ctx.db
+          .query('participants')
+          .withIndex('by_team', (q) => q.eq('teamId', team._id))
+          .collect()
+        for (const p of parts) await ctx.db.delete(p._id)
+        const scores = await ctx.db
+          .query('scores')
+          .withIndex('by_team', (q) => q.eq('teamId', team._id))
+          .collect()
+        for (const s of scores) await ctx.db.delete(s._id)
+        await ctx.db.delete(team._id)
+      }
+    }
+    let teamCount = 0
+    let participantCount = 0
+    for (const t of teams) {
+      const teamId = await ctx.db.insert('teams', {
+        hackathonId,
+        name: t.name,
+        project: t.project,
+        description: t.description,
+        tags: t.tags,
+      })
+      teamCount++
+      for (const m of t.members) {
+        await ctx.db.insert('participants', {
+          hackathonId,
+          teamId,
+          name: m.name,
+          metrics: m.metrics,
+        })
+        participantCount++
+      }
+    }
+    return { teamCount, participantCount }
+  },
+})
