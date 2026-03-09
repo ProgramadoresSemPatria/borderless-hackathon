@@ -3,10 +3,12 @@ import { useEffect, useState } from 'react'
 import { useQuery, useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import type { Id } from '@/convex/_generated/dataModel'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { FormField } from './form-field'
+import { CustomSelect } from './custom-select'
+import { SectionHeader } from './section-header'
 import { ChevronDown, Plus, X } from 'lucide-react'
 
 interface HackathonSelectorProps {
@@ -90,6 +92,18 @@ export function useSelectedHackathon(hackathonId: Id<'hackathons'> | null) {
 
 // --- Create Hackathon Dialog ---
 
+const STATUS_OPTIONS = [
+  { value: 'upcoming', label: 'Em breve' },
+  { value: 'live', label: 'Em andamento' },
+  { value: 'finished', label: 'Finalizado' },
+]
+
+const inputCls = 'h-10 border-white/10 bg-white/[0.04] text-white placeholder:text-[#4a4a4a] focus:border-[#9810fa]/50 focus:ring-1 focus:ring-[#9810fa]/20'
+
+function formatDatePtBr(d: Date): string {
+  return d.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
 function CreateHackathonDialog({
   open,
   onClose,
@@ -104,11 +118,13 @@ function CreateHackathonDialog({
   const [name, setName] = useState('Borderless Hackathon')
   const [edition, setEdition] = useState('')
   const [slug, setSlug] = useState('')
-  const [date, setDate] = useState('')
+  const [dateValue, setDateValue] = useState('')
   const [status, setStatus] = useState<'upcoming' | 'live' | 'finished'>('upcoming')
   const [criteriaInput, setCriteriaInput] = useState('')
   const [criteria, setCriteria] = useState<string[]>(['Inovação', 'Execução', 'Pitch', 'Impacto'])
   const [saving, setSaving] = useState(false)
+
+  const dateString = dateValue ? formatDatePtBr(new Date(dateValue + 'T12:00:00')) : ''
 
   function addCriterion() {
     const trimmed = criteriaInput.trim()
@@ -123,14 +139,14 @@ function CreateHackathonDialog({
   }
 
   async function handleCreate() {
-    if (!name.trim() || !edition.trim() || !slug.trim() || !date.trim() || criteria.length === 0) return
+    if (!name.trim() || !edition.trim() || !slug.trim() || !dateString || criteria.length === 0) return
     setSaving(true)
     try {
       const id = await createHackathon({
         name: name.trim(),
         edition: edition.trim(),
         slug: slug.trim(),
-        date: date.trim(),
+        date: dateString,
         status,
         criteria,
       })
@@ -140,75 +156,70 @@ function CreateHackathonDialog({
     }
   }
 
-  const isValid = name.trim() && edition.trim() && slug.trim() && date.trim() && criteria.length > 0
+  const isValid = name.trim() && edition.trim() && slug.trim() && dateString && criteria.length > 0
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="border-white/10 bg-[#2a2a2b] text-white max-w-lg">
+      <DialogContent className="gap-0 border-white/[0.08] bg-[#2a2a2b] text-white sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Nova Edição</DialogTitle>
+          <DialogDescription className="text-[#636363]">
+            Configure uma nova edição do hackathon.
+          </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4 py-2">
-          <div className="space-y-1">
-            <Label className="text-[#b2b2b2]">Nome</Label>
+
+        <div className="space-y-4 pt-4">
+          <FormField label="Nome" required>
             <Input
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="Borderless Hackathon"
-              className="border-white/10 bg-white/5 text-white"
+              className={inputCls}
             />
-          </div>
+          </FormField>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <Label className="text-[#b2b2b2]">Edição</Label>
+            <FormField label="Edição" required>
               <Input
                 value={edition}
                 onChange={e => setEdition(e.target.value)}
                 placeholder="2026 — 2ª Edição"
-                className="border-white/10 bg-white/5 text-white"
+                className={inputCls}
               />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-[#b2b2b2]">Slug (URL)</Label>
+            </FormField>
+
+            <FormField label="Slug (URL)" required>
               <Input
                 value={slug}
                 onChange={e => setSlug(e.target.value)}
                 placeholder="borderless-2026-2"
-                className="border-white/10 bg-white/5 text-white"
+                className={inputCls}
               />
-            </div>
+            </FormField>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <Label className="text-[#b2b2b2]">Data</Label>
-              <Input
-                value={date}
-                onChange={e => setDate(e.target.value)}
-                placeholder="15 de Março de 2026"
-                className="border-white/10 bg-white/5 text-white"
+            <FormField label="Data" required>
+              <input
+                type="date"
+                value={dateValue}
+                onChange={e => setDateValue(e.target.value)}
+                className="h-10 w-full rounded-md border border-white/10 bg-white/[0.04] px-3 text-sm text-white focus:border-[#9810fa]/50 focus:ring-1 focus:ring-[#9810fa]/20 focus:outline-none [color-scheme:dark]"
               />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-[#b2b2b2]">Status</Label>
-              <div className="relative">
-                <select
-                  value={status}
-                  onChange={e => setStatus(e.target.value as typeof status)}
-                  className="w-full appearance-none rounded-lg border border-white/10 bg-[#2a2a2b] px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#9810fa]"
-                >
-                  <option value="upcoming" className="bg-[#2a2a2b] text-white">Em breve</option>
-                  <option value="live" className="bg-[#2a2a2b] text-white">Em andamento</option>
-                  <option value="finished" className="bg-[#2a2a2b] text-white">Finalizado</option>
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#636363]" />
-              </div>
-            </div>
+            </FormField>
+
+            <FormField label="Status" required>
+              <CustomSelect
+                value={status}
+                onChange={v => setStatus(v as typeof status)}
+                options={STATUS_OPTIONS}
+              />
+            </FormField>
           </div>
 
+          {/* Criteria */}
           <div className="space-y-2">
-            <Label className="text-[#b2b2b2]">Critérios de avaliação</Label>
+            <SectionHeader title="Critérios de avaliação" />
             <div className="flex flex-wrap gap-2">
               {criteria.map(c => (
                 <span
@@ -233,7 +244,7 @@ function CreateHackathonDialog({
                 onChange={e => setCriteriaInput(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCriterion() } }}
                 placeholder="Novo critério…"
-                className="border-white/10 bg-white/5 text-white"
+                className={inputCls}
               />
               <Button
                 type="button"
@@ -247,12 +258,14 @@ function CreateHackathonDialog({
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-2">
-            <Button variant="ghost" onClick={onClose} className="text-[#b2b2b2]">Cancelar</Button>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button variant="ghost" onClick={onClose} className="text-[#b2b2b2] hover:text-white">
+              Cancelar
+            </Button>
             <Button
               onClick={handleCreate}
               disabled={!isValid || saving}
-              className="bg-[#9810fa] hover:bg-[#b040ff] text-white disabled:opacity-50 active:scale-[0.97] transition-transform"
+              className="bg-[#9810fa] hover:bg-[#b040ff] text-white"
             >
               {saving ? 'Criando…' : 'Criar Hackathon'}
             </Button>

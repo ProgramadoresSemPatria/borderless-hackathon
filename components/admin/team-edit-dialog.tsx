@@ -3,12 +3,13 @@ import { useState } from 'react'
 import { useQuery, useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import type { Id } from '@/convex/_generated/dataModel'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
+import { FormField } from './form-field'
+import { SectionHeader } from './section-header'
 import { Trash2 } from 'lucide-react'
 
 interface TeamEditDialogProps {
@@ -17,6 +18,15 @@ interface TeamEditDialogProps {
   criteria: string[]
   open: boolean
   onClose: () => void
+}
+
+const inputCls = 'h-10 border-white/10 bg-white/[0.04] text-white placeholder:text-[#4a4a4a] focus:border-[#9810fa]/50 focus:ring-1 focus:ring-[#9810fa]/20'
+
+function scoreColor(v: number) {
+  if (v <= 3) return 'text-red-400'
+  if (v <= 6) return 'text-yellow-400'
+  if (v <= 8) return 'text-[#2debb1]'
+  return 'text-[#9810fa]'
 }
 
 export function TeamEditDialog({ teamId, hackathonId, criteria, open, onClose }: TeamEditDialogProps) {
@@ -50,6 +60,10 @@ export function TeamEditDialog({ teamId, hackathonId, criteria, open, onClose }:
   }
 
   if (!team) return null
+
+  const avg = criteria.length > 0
+    ? criteria.reduce((sum, c) => sum + (scores[c] ?? 0), 0) / criteria.length
+    : 0
 
   async function handleSaveDetails() {
     setSaving(true)
@@ -97,48 +111,46 @@ export function TeamEditDialog({ teamId, hackathonId, criteria, open, onClose }:
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="border-white/10 bg-[#2a2a2b] text-white sm:max-w-lg">
+      <DialogContent className="gap-0 border-white/[0.08] bg-[#2a2a2b] text-white sm:max-w-[520px]">
         <DialogHeader>
           <DialogTitle>Editar — {team.name}</DialogTitle>
+          <DialogDescription className="text-[#636363]">
+            Gerencie detalhes e notas do time.
+          </DialogDescription>
         </DialogHeader>
-        <Tabs defaultValue="details" className="mt-2">
+
+        <Tabs defaultValue="details" className="pt-4">
           <TabsList className="mb-4 grid w-full grid-cols-2 bg-white/5">
-            <TabsTrigger value="details" className="text-sm data-[state=active]:bg-[#9810fa] data-[state=active]:text-white">Detalhes</TabsTrigger>
-            <TabsTrigger value="scores" className="text-sm data-[state=active]:bg-[#9810fa] data-[state=active]:text-white">Notas</TabsTrigger>
+            <TabsTrigger value="details" className="text-sm data-[state=active]:bg-[#9810fa] data-[state=active]:text-white">
+              Detalhes
+            </TabsTrigger>
+            <TabsTrigger value="scores" className="text-sm data-[state=active]:bg-[#9810fa] data-[state=active]:text-white">
+              Notas
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="details" className="space-y-4">
-            <div className="space-y-1">
-              <Label className="text-[#b2b2b2]">Nome do Time</Label>
-              <Input
-                value={name}
-                onChange={e => setName(e.target.value)}
-                className="border-white/10 bg-white/5 text-white"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-[#b2b2b2]">Projeto</Label>
-              <Input
-                value={project}
-                onChange={e => setProject(e.target.value)}
-                className="border-white/10 bg-white/5 text-white"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-[#b2b2b2]">Descrição</Label>
+            <FormField label="Nome do Time">
+              <Input value={name} onChange={e => setName(e.target.value)} className={inputCls} />
+            </FormField>
+
+            <FormField label="Projeto">
+              <Input value={project} onChange={e => setProject(e.target.value)} className={inputCls} />
+            </FormField>
+
+            <FormField label="Descrição">
               <textarea
                 value={description}
                 onChange={e => setDescription(e.target.value)}
                 rows={3}
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-[#636363] focus:outline-none focus:ring-2 focus:ring-[#9810fa]"
+                className="w-full min-h-[80px] resize-none rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-[#4a4a4a] focus:border-[#9810fa]/50 focus:ring-1 focus:ring-[#9810fa]/20 focus:outline-none"
                 placeholder="Descreva o projeto do time…"
               />
-            </div>
+            </FormField>
 
-            {/* Members read-only */}
             {team.members.length > 0 && (
-              <div className="space-y-2">
-                <Label className="text-[#636363]">Membros</Label>
+              <div className="space-y-1.5">
+                <SectionHeader title="Membros" />
                 <div className="flex flex-wrap gap-1.5">
                   {team.members.map(m => (
                     <Badge key={m._id} variant="outline" className="border-white/10 text-xs text-[#b2b2b2]">
@@ -149,11 +161,14 @@ export function TeamEditDialog({ teamId, hackathonId, criteria, open, onClose }:
               </div>
             )}
 
-            <div className="flex items-center justify-between pt-2">
+            {/* Delete */}
+            <div className="border-t border-white/[0.06] pt-4">
               {confirmDelete ? (
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-red-400">Tem certeza?</span>
-                  <Button size="sm" variant="ghost" onClick={() => setConfirmDelete(false)} className="h-7 text-xs text-[#b2b2b2]">Não</Button>
+                  <span className="text-xs text-red-400">Tem certeza? Essa ação não pode ser desfeita.</span>
+                  <Button size="sm" variant="ghost" onClick={() => setConfirmDelete(false)} className="h-7 text-xs text-[#b2b2b2]">
+                    Não
+                  </Button>
                   <Button size="sm" onClick={handleDelete} disabled={deleting} className="h-7 bg-red-600 text-xs text-white hover:bg-red-700">
                     {deleting ? 'Excluindo…' : 'Sim, excluir'}
                   </Button>
@@ -164,36 +179,50 @@ export function TeamEditDialog({ teamId, hackathonId, criteria, open, onClose }:
                   Excluir Time
                 </Button>
               )}
-              <div className="flex gap-3">
-                <Button variant="ghost" onClick={onClose} className="text-[#b2b2b2]">Cancelar</Button>
-                <Button onClick={handleSaveDetails} disabled={saving} className="bg-[#9810fa] hover:bg-[#b040ff] text-white active:scale-[0.97] transition-transform">
-                  {saving ? 'Salvando…' : 'Salvar'}
-                </Button>
-              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="ghost" onClick={onClose} className="text-[#b2b2b2] hover:text-white">Cancelar</Button>
+              <Button onClick={handleSaveDetails} disabled={saving} className="bg-[#9810fa] hover:bg-[#b040ff] text-white">
+                {saving ? 'Salvando…' : 'Salvar'}
+              </Button>
             </div>
           </TabsContent>
 
           <TabsContent value="scores" className="space-y-4">
-            <p className="text-sm text-[#b2b2b2]">Projeto: {team.project}</p>
-            <div className="space-y-3">
-              {criteria.map((criterion) => (
-                <div key={criterion} className="space-y-1">
-                  <Label className="text-[#b2b2b2]">{criterion} (0–10)</Label>
-                  <Input
-                    type="number"
-                    min={0}
-                    max={10}
-                    step={0.1}
-                    value={scores[criterion] ?? 0}
-                    onChange={e => setScores(prev => ({ ...prev, [criterion]: parseFloat(e.target.value) || 0 }))}
-                    className="border-white/10 bg-white/5 text-white"
-                  />
-                </div>
-              ))}
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-[#b2b2b2]">{team.project}</p>
+              <span className="text-sm font-bold tabular-nums text-white">Média: {avg.toFixed(1)}</span>
             </div>
-            <div className="flex justify-end gap-3 pt-2">
-              <Button variant="ghost" onClick={onClose} className="text-[#b2b2b2]">Cancelar</Button>
-              <Button onClick={handleSaveScores} disabled={saving} className="bg-[#9810fa] hover:bg-[#b040ff] text-white active:scale-[0.97] transition-transform">
+
+            <div className="max-h-[50vh] space-y-3 overflow-y-auto pr-1">
+              {criteria.map(criterion => {
+                const value = scores[criterion] ?? 0
+                return (
+                  <div key={criterion} className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm text-[#b2b2b2]">{criterion}</label>
+                      <span className={`text-sm font-bold tabular-nums ${scoreColor(value)}`}>
+                        {value.toFixed(1)}
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={10}
+                      step={0.1}
+                      value={value}
+                      onChange={e => setScores(prev => ({ ...prev, [criterion]: parseFloat(e.target.value) }))}
+                      className="score-slider"
+                    />
+                  </div>
+                )
+              })}
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="ghost" onClick={onClose} className="text-[#b2b2b2] hover:text-white">Cancelar</Button>
+              <Button onClick={handleSaveScores} disabled={saving} className="bg-[#9810fa] hover:bg-[#b040ff] text-white">
                 {saving ? 'Salvando…' : 'Salvar Notas'}
               </Button>
             </div>
