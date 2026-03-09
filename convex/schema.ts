@@ -29,6 +29,8 @@ export default defineSchema({
     teamId: v.id('teams'),
     name: v.string(),
     avatar: v.optional(v.string()),
+    role: v.optional(v.string()),
+    experienceYears: v.optional(v.number()),
     metrics: v.object({
       tasksCompleted: v.number(),
       attendance: v.number(),

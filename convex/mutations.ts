@@ -92,6 +92,8 @@ export const createParticipant = mutation({
     teamId: v.id('teams'),
     name: v.string(),
     avatar: v.optional(v.string()),
+    role: v.optional(v.string()),
+    experienceYears: v.optional(v.number()),
     metrics: v.object({
       tasksCompleted: v.number(),
       attendance: v.number(),
@@ -109,6 +111,8 @@ export const updateParticipant = mutation({
     id: v.id('participants'),
     name: v.optional(v.string()),
     avatar: v.optional(v.string()),
+    role: v.optional(v.string()),
+    experienceYears: v.optional(v.number()),
     teamId: v.optional(v.id('teams')),
     metrics: v.optional(
       v.object({

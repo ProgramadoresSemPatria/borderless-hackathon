@@ -33,5 +33,14 @@ export function CountingNumber({
     return controls.stop
   }, [inView, value, duration, decimals, motionValue])
 
-  return <span ref={ref} className={className}>0</span>
+  const formatted = value.toFixed(decimals)
+
+  return (
+    <span className={`inline-grid ${className}`}>
+      {/* Invisible placeholder to reserve width */}
+      <span className="invisible col-start-1 row-start-1">{formatted}</span>
+      {/* Animated value on top */}
+      <span ref={ref} className="col-start-1 row-start-1">0</span>
+    </span>
+  )
 }

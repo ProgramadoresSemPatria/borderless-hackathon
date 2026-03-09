@@ -50,7 +50,7 @@ export const getTeamsRanked = query({
 
         const scoresArray = scores.map(s => ({ criteriaKey: s.criteriaKey, value: s.value }))
 
-        return { ...team, scores: scoresArray, totalScore, memberNames: members.map(m => m.name) }
+        return { ...team, scores: scoresArray, totalScore, memberNames: members.map(m => m.name), members: members.map(m => ({ _id: m._id, name: m.name, role: m.role })) }
       }),
     )
 

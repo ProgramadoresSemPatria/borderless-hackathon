@@ -1,59 +1,204 @@
 'use client'
 import { useState } from 'react'
+import { useQuery, useMutation } from 'convex/react'
+import { api } from '@/convex/_generated/api'
+import type { Id } from '@/convex/_generated/dataModel'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import type { Team } from '@/lib/types'
-import { hackathonConfig } from '@/lib/mock-data'
+import { Badge } from '@/components/ui/badge'
+import { Trash2 } from 'lucide-react'
 
 interface TeamEditDialogProps {
-  team: Team | null
+  teamId: Id<'teams'>
+  hackathonId: Id<'hackathons'>
+  criteria: string[]
   open: boolean
   onClose: () => void
-  onSave: (team: Team) => void
 }
 
-export function TeamEditDialog({ team, open, onClose, onSave }: TeamEditDialogProps) {
-  const [scores, setScores] = useState<Record<string, number>>(team?.scores ?? {})
+export function TeamEditDialog({ teamId, hackathonId, criteria, open, onClose }: TeamEditDialogProps) {
+  const team = useQuery(api.hackathons.getTeam, { teamId })
+  const upsertScore = useMutation(api.mutations.upsertScore)
+  const updateTeam = useMutation(api.mutations.updateTeam)
+  const deleteTeam = useMutation(api.mutations.deleteTeam)
+
+  const [scores, setScores] = useState<Record<string, number>>({})
+  const [name, setName] = useState('')
+  const [project, setProject] = useState('')
+  const [description, setDescription] = useState('')
+  const [initialized, setInitialized] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+
+  if (team && !initialized) {
+    const loaded: Record<string, number> = {}
+    for (const s of team.scores) {
+      loaded[s.criteriaKey] = s.value
+    }
+    for (const c of criteria) {
+      if (!(c in loaded)) loaded[c] = 0
+    }
+    setScores(loaded)
+    setName(team.name)
+    setProject(team.project)
+    setDescription(team.description ?? '')
+    setInitialized(true)
+  }
 
   if (!team) return null
 
-  function handleSave() {
-    const total = Object.values(scores).reduce((a, b) => a + b, 0) / Object.keys(scores).length
-    onSave({ ...team!, scores, totalScore: parseFloat(total.toFixed(3)) })
-    onClose()
+  async function handleSaveDetails() {
+    setSaving(true)
+    try {
+      await updateTeam({
+        id: teamId,
+        name: name.trim() || undefined,
+        project: project.trim() || undefined,
+        description: description.trim() || undefined,
+      })
+      onClose()
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function handleSaveScores() {
+    setSaving(true)
+    try {
+      await Promise.all(
+        criteria.map(criteriaKey =>
+          upsertScore({
+            hackathonId,
+            teamId,
+            criteriaKey,
+            value: scores[criteriaKey] ?? 0,
+          }),
+        ),
+      )
+      onClose()
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function handleDelete() {
+    setDeleting(true)
+    try {
+      await deleteTeam({ id: teamId })
+      onClose()
+    } finally {
+      setDeleting(false)
+    }
   }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="border-white/10 bg-[#2a2a2b] text-white">
+      <DialogContent className="border-white/10 bg-[#2a2a2b] text-white sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Editar Notas — {team.name}</DialogTitle>
+          <DialogTitle>Editar — {team.name}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 py-2">
-          <p className="text-sm text-[#b2b2b2]">Projeto: {team.project}</p>
-          <div className="space-y-3">
-            {hackathonConfig.criteria.map((criterion) => (
-              <div key={criterion} className="space-y-1">
-                <Label className="text-[#b2b2b2]">{criterion} (0–10)</Label>
-                <Input
-                  type="number"
-                  min={0}
-                  max={10}
-                  step={0.1}
-                  value={scores[criterion] ?? 0}
-                  onChange={e => setScores(prev => ({ ...prev, [criterion]: parseFloat(e.target.value) || 0 }))}
-                  className="border-white/10 bg-white/5 text-white"
-                />
+        <Tabs defaultValue="details" className="mt-2">
+          <TabsList className="mb-4 grid w-full grid-cols-2 bg-white/5">
+            <TabsTrigger value="details" className="text-sm data-[state=active]:bg-[#9810fa] data-[state=active]:text-white">Detalhes</TabsTrigger>
+            <TabsTrigger value="scores" className="text-sm data-[state=active]:bg-[#9810fa] data-[state=active]:text-white">Notas</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="details" className="space-y-4">
+            <div className="space-y-1">
+              <Label className="text-[#b2b2b2]">Nome do Time</Label>
+              <Input
+                value={name}
+                onChange={e => setName(e.target.value)}
+                className="border-white/10 bg-white/5 text-white"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-[#b2b2b2]">Projeto</Label>
+              <Input
+                value={project}
+                onChange={e => setProject(e.target.value)}
+                className="border-white/10 bg-white/5 text-white"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-[#b2b2b2]">Descrição</Label>
+              <textarea
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+                rows={3}
+                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-[#636363] focus:outline-none focus:ring-2 focus:ring-[#9810fa]"
+                placeholder="Descreva o projeto do time…"
+              />
+            </div>
+
+            {/* Members read-only */}
+            {team.members.length > 0 && (
+              <div className="space-y-2">
+                <Label className="text-[#636363]">Membros</Label>
+                <div className="flex flex-wrap gap-1.5">
+                  {team.members.map(m => (
+                    <Badge key={m._id} variant="outline" className="border-white/10 text-xs text-[#b2b2b2]">
+                      {m.name}{m.role ? ` · ${m.role}` : ''}
+                    </Badge>
+                  ))}
+                </div>
               </div>
-            ))}
-          </div>
-          <div className="flex justify-end gap-3 pt-2">
-            <Button variant="ghost" onClick={onClose} className="text-[#b2b2b2]">Cancelar</Button>
-            <Button onClick={handleSave} className="bg-[#9810fa] hover:bg-[#b040ff] text-white">Salvar</Button>
-          </div>
-        </div>
+            )}
+
+            <div className="flex items-center justify-between pt-2">
+              {confirmDelete ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-red-400">Tem certeza?</span>
+                  <Button size="sm" variant="ghost" onClick={() => setConfirmDelete(false)} className="h-7 text-xs text-[#b2b2b2]">Não</Button>
+                  <Button size="sm" onClick={handleDelete} disabled={deleting} className="h-7 bg-red-600 text-xs text-white hover:bg-red-700">
+                    {deleting ? 'Excluindo…' : 'Sim, excluir'}
+                  </Button>
+                </div>
+              ) : (
+                <Button size="sm" variant="ghost" onClick={() => setConfirmDelete(true)} className="gap-1.5 text-xs text-red-400 hover:bg-red-400/10 hover:text-red-300">
+                  <Trash2 className="h-3.5 w-3.5" />
+                  Excluir Time
+                </Button>
+              )}
+              <div className="flex gap-3">
+                <Button variant="ghost" onClick={onClose} className="text-[#b2b2b2]">Cancelar</Button>
+                <Button onClick={handleSaveDetails} disabled={saving} className="bg-[#9810fa] hover:bg-[#b040ff] text-white active:scale-[0.97] transition-transform">
+                  {saving ? 'Salvando…' : 'Salvar'}
+                </Button>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="scores" className="space-y-4">
+            <p className="text-sm text-[#b2b2b2]">Projeto: {team.project}</p>
+            <div className="space-y-3">
+              {criteria.map((criterion) => (
+                <div key={criterion} className="space-y-1">
+                  <Label className="text-[#b2b2b2]">{criterion} (0–10)</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={10}
+                    step={0.1}
+                    value={scores[criterion] ?? 0}
+                    onChange={e => setScores(prev => ({ ...prev, [criterion]: parseFloat(e.target.value) || 0 }))}
+                    className="border-white/10 bg-white/5 text-white"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end gap-3 pt-2">
+              <Button variant="ghost" onClick={onClose} className="text-[#b2b2b2]">Cancelar</Button>
+              <Button onClick={handleSaveScores} disabled={saving} className="bg-[#9810fa] hover:bg-[#b040ff] text-white active:scale-[0.97] transition-transform">
+                {saving ? 'Salvando…' : 'Salvar Notas'}
+              </Button>
+            </div>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   )
