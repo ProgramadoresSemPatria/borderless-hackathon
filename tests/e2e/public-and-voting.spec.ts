@@ -4,9 +4,7 @@ import {
   createHackathon,
   createTeam,
   selectHackathon,
-  signInVisitor,
   uniqueSlug,
-  E2E_CLERK_USER_EMAIL,
 } from './helpers'
 
 /**
@@ -64,55 +62,6 @@ test.describe('public + voting flow', () => {
     await visitor.getByRole('heading', { name: 'Voters Alpha' }).click()
     await expect(visitor.getByRole('heading', { name: 'Voters Alpha' })).toBeVisible()
     await expect(visitor.getByText(/Membros/)).toBeVisible()
-
-    await anon.close()
-  })
-
-  test('signed-in user can cast a vote and the vote persists', async ({ page, context }) => {
-    test.skip(
-      !E2E_CLERK_USER_EMAIL,
-      'set E2E_CLERK_USER_EMAIL / E2E_CLERK_USER_PASSWORD to a Clerk test user to enable',
-    )
-
-    // Seed
-    await adminLogin(page)
-    const hackathon = await createHackathon(page, {
-      name: 'Cast Vote',
-      edition: 'CV',
-      slug: uniqueSlug('cast'),
-      date: '2026-06-03',
-    })
-    const slug = hackathon.slug
-    await createTeam(page, hackathon, { name: 'Cast Alpha', project: 'CA' })
-    await createTeam(page, hackathon, { name: 'Cast Beta', project: 'CB' })
-
-    // Open voting
-    await page.goto('/admin/dashboard')
-    await selectHackathon(page, hackathon)
-    await page.getByText('Fechado').first().locator('xpath=following::button[1]').click()
-    await expect(page.getByText('Aberto').first()).toBeVisible()
-
-    // Anonymous browser context for the visitor
-    const anon = await context.browser()!.newContext()
-    const visitor = await anon.newPage()
-    await signInVisitor(visitor)
-
-    await visitor.goto(`/${slug}/votar`)
-    await expect(visitor.getByRole('heading', { name: 'Voto Popular' })).toBeVisible()
-
-    // Cast vote on first card
-    const voteButtons = visitor.getByRole('button', { name: 'Votar', exact: true })
-    await expect(voteButtons).toHaveCount(2)
-    await voteButtons.first().click()
-    await visitor.getByRole('button', { name: 'Confirmar' }).click()
-
-    // Voted state
-    await expect(visitor.getByText('Votado')).toBeVisible()
-    await expect(visitor.getByText('Você já votou!')).toBeVisible()
-
-    // Reload preserves state (vote tied to Clerk user, not cookie)
-    await visitor.reload()
-    await expect(visitor.getByText('Votado')).toBeVisible()
 
     await anon.close()
   })

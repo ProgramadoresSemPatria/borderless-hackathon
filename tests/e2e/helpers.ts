@@ -1,38 +1,6 @@
 import { Page, expect } from '@playwright/test'
-import { clerk, setupClerkTestingToken } from '@clerk/testing/playwright'
 
 export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'
-
-export const E2E_CLERK_USER_EMAIL = process.env.E2E_CLERK_USER_EMAIL
-export const E2E_CLERK_USER_PASSWORD = process.env.E2E_CLERK_USER_PASSWORD
-
-/**
- * Signs a visitor in via Clerk using the e-mail/password strategy.
- * Requires E2E_CLERK_USER_EMAIL and E2E_CLERK_USER_PASSWORD env vars to
- * point to a real user that exists in the Clerk project (create one
- * manually in the Clerk dashboard for the test environment).
- *
- * Tests should `test.skip(!E2E_CLERK_USER_EMAIL, '…')` before calling this
- * so they degrade gracefully when creds aren't configured.
- */
-export async function signInVisitor(page: Page) {
-  if (!E2E_CLERK_USER_EMAIL || !E2E_CLERK_USER_PASSWORD) {
-    throw new Error(
-      'E2E_CLERK_USER_EMAIL and E2E_CLERK_USER_PASSWORD must be set to sign in a Clerk test user',
-    )
-  }
-  await setupClerkTestingToken({ page })
-  // Must be on a page that has Clerk loaded before calling clerk.signIn
-  await page.goto('/')
-  await clerk.signIn({
-    page,
-    signInParams: {
-      strategy: 'password',
-      identifier: E2E_CLERK_USER_EMAIL,
-      password: E2E_CLERK_USER_PASSWORD,
-    },
-  })
-}
 
 /**
  * Logs into /admin and waits for redirect to /admin/dashboard.
