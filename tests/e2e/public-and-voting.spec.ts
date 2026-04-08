@@ -3,6 +3,7 @@ import {
   adminLogin,
   createHackathon,
   createTeam,
+  selectHackathon,
   signInVisitor,
   uniqueSlug,
   E2E_CLERK_USER_EMAIL,
@@ -21,18 +22,19 @@ test.describe('public + voting flow', () => {
   test('seed → open voting → anon visitor sees sign-in gate', async ({ page, context }) => {
     // 1. Seed via admin
     await adminLogin(page)
-    const slug = uniqueSlug('vote')
-    await createHackathon(page, {
+    const hackathon = await createHackathon(page, {
       name: 'Vote E2E',
       edition: 'Vote Edition',
-      slug,
+      slug: uniqueSlug('vote'),
       date: '2026-06-01',
     })
-    await createTeam(page, { name: 'Voters Alpha', project: 'PA' })
-    await createTeam(page, { name: 'Voters Beta', project: 'PB' })
+    const slug = hackathon.slug
+    await createTeam(page, hackathon, { name: 'Voters Alpha', project: 'PA' })
+    await createTeam(page, hackathon, { name: 'Voters Beta', project: 'PB' })
 
     // 2. Open voting from dashboard
     await page.goto('/admin/dashboard')
+    await selectHackathon(page, hackathon)
     const fechado = page.getByText('Fechado').first()
     await expect(fechado).toBeVisible()
     await fechado.locator('xpath=following::button[1]').click()
@@ -46,7 +48,8 @@ test.describe('public + voting flow', () => {
     await visitor.goto(`/${slug}/votar`)
     await expect(visitor.getByRole('heading', { name: 'Voto Popular' })).toBeVisible()
     await expect(visitor.getByRole('heading', { name: 'Entre para votar' })).toBeVisible()
-    await expect(visitor.getByRole('button', { name: 'Entrar' })).toBeVisible()
+    // Two "Entrar" buttons exist (navbar + gate); scope to the main content
+    await expect(visitor.getByRole('main').getByRole('button', { name: 'Entrar' })).toBeVisible()
     // Vote cards should NOT be rendered for unauthenticated users
     await expect(visitor.getByRole('button', { name: 'Votar', exact: true })).toHaveCount(0)
 
@@ -73,18 +76,19 @@ test.describe('public + voting flow', () => {
 
     // Seed
     await adminLogin(page)
-    const slug = uniqueSlug('cast')
-    await createHackathon(page, {
+    const hackathon = await createHackathon(page, {
       name: 'Cast Vote',
       edition: 'CV',
-      slug,
+      slug: uniqueSlug('cast'),
       date: '2026-06-03',
     })
-    await createTeam(page, { name: 'Cast Alpha', project: 'CA' })
-    await createTeam(page, { name: 'Cast Beta', project: 'CB' })
+    const slug = hackathon.slug
+    await createTeam(page, hackathon, { name: 'Cast Alpha', project: 'CA' })
+    await createTeam(page, hackathon, { name: 'Cast Beta', project: 'CB' })
 
     // Open voting
     await page.goto('/admin/dashboard')
+    await selectHackathon(page, hackathon)
     await page.getByText('Fechado').first().locator('xpath=following::button[1]').click()
     await expect(page.getByText('Aberto').first()).toBeVisible()
 
@@ -115,14 +119,14 @@ test.describe('public + voting flow', () => {
 
   test('voting closed shows lock screen', async ({ page }) => {
     await adminLogin(page)
-    const slug = uniqueSlug('closed')
-    await createHackathon(page, {
+    const hackathon = await createHackathon(page, {
       name: 'Closed Test',
       edition: 'C',
-      slug,
+      slug: uniqueSlug('closed'),
       date: '2026-06-02',
     })
-    await createTeam(page, { name: 'X', project: 'PX' })
+    const slug = hackathon.slug
+    await createTeam(page, hackathon, { name: 'X', project: 'PX' })
 
     const anon = await page.context().browser()!.newContext()
     const visitor = await anon.newPage()

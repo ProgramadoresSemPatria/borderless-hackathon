@@ -47,13 +47,38 @@ export async function adminLogin(page: Page) {
 }
 
 /**
+ * The HackathonSelector renders a native <select> with options labeled
+ * `${name} — ${edition}`. Each admin page has its own local state, so we
+ * must explicitly select the target hackathon after every navigation
+ * (the auto-pick only kicks in when there's exactly one in the DB).
+ */
+export async function selectHackathon(
+  page: Page,
+  opts: { name: string; edition: string },
+) {
+  const label = `${opts.name} — ${opts.edition}`
+  await page.locator('select').first().selectOption({ label })
+}
+
+/**
+ * Holds the most recently created hackathon so subsequent helpers in the
+ * same test can re-select it after navigation. Tests should call
+ * createHackathon → createTeam in the same test scope.
+ */
+export interface HackathonRef {
+  name: string
+  edition: string
+  slug: string
+}
+
+/**
  * Creates a hackathon via the dashboard's "Criar novo hackathon" modal.
- * Returns the slug used (caller passes a unique one to avoid clashes).
+ * Returns the full ref so callers can pass it to selectHackathon/createTeam.
  */
 export async function createHackathon(
   page: Page,
   opts: { name: string; edition: string; slug: string; date: string },
-) {
+): Promise<HackathonRef> {
   await page.goto('/admin/dashboard')
   await page.getByRole('button', { name: 'Criar novo hackathon' }).click()
   const dialog = page.getByRole('dialog')
@@ -63,14 +88,16 @@ export async function createHackathon(
   await dialog.locator('input[type="date"]').fill(opts.date)
   await dialog.getByRole('button', { name: 'Criar Hackathon' }).click()
   await expect(dialog).toBeHidden()
-  return opts.slug
+  return { name: opts.name, edition: opts.edition, slug: opts.slug }
 }
 
 export async function createTeam(
   page: Page,
+  hackathon: HackathonRef,
   opts: { name: string; project: string; description?: string },
 ) {
   await page.goto('/admin/teams')
+  await selectHackathon(page, hackathon)
   await page.getByRole('button', { name: 'Novo Time' }).first().click()
   const dialog = page.getByRole('dialog')
   await dialog.getByPlaceholder('Nome do time').fill(opts.name)
