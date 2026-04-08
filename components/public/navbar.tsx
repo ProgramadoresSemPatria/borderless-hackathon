@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { SignInButton, UserButton, useUser } from '@clerk/nextjs'
 
 interface PublicNavbarProps {
   slug?: string
@@ -8,12 +9,14 @@ interface PublicNavbarProps {
 
 export function PublicNavbar({ slug }: PublicNavbarProps = {}) {
   const pathname = usePathname()
+  const { isSignedIn } = useUser()
 
   const base = slug ? `/${slug}` : ''
   const links = [
     { href: `${base}/`, label: 'Início' },
     { href: `${base}/resultados`, label: 'Resultados' },
     { href: `${base}/times`, label: 'Times' },
+    { href: `${base}/votar`, label: 'Votar' },
   ]
 
   return (
@@ -25,21 +28,35 @@ export function PublicNavbar({ slug }: PublicNavbarProps = {}) {
           </span>
         </Link>
 
-        <nav className="flex items-center gap-1">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`text-xs font-semibold uppercase tracking-[0.08em] rounded-lg px-3 py-1.5 transition-colors ${
-                (link.href === `${base}/` ? pathname === link.href : pathname.startsWith(link.href))
-                  ? 'bg-white/12 text-white font-semibold'
-                  : 'text-white/50 hover:bg-white/10 hover:text-white'
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        <div className="flex items-center gap-3">
+          <nav className="flex items-center gap-1">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-xs font-semibold uppercase tracking-[0.08em] rounded-lg px-3 py-1.5 transition-colors ${
+                  (link.href === `${base}/` ? pathname === link.href : pathname.startsWith(link.href))
+                    ? 'bg-white/12 text-white font-semibold'
+                    : 'text-white/50 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center pl-2">
+            {isSignedIn ? (
+              <UserButton appearance={{ elements: { avatarBox: 'h-7 w-7' } }} />
+            ) : (
+              <SignInButton mode="modal">
+                <button className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.08em] text-white/80 transition-colors hover:bg-white/10 hover:text-white">
+                  Entrar
+                </button>
+              </SignInButton>
+            )}
+          </div>
+        </div>
       </div>
     </header>
   )

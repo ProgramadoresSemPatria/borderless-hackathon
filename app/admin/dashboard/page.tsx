@@ -1,13 +1,13 @@
 'use client'
 import { useState, useCallback, useMemo } from 'react'
-import { useQuery } from 'convex/react'
+import { useQuery, useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import type { Id } from '@/convex/_generated/dataModel'
 import { HackathonSelector, useSelectedHackathon } from '@/components/admin/hackathon-selector'
 import { Badge } from '@/components/ui/badge'
 import { FadeUp } from '@/components/animated/fade-up'
 import { CountingNumber } from '@/components/animated/counting-number'
-import { Trophy, Users, Code2, Star, type LucideIcon } from 'lucide-react'
+import { Trophy, Users, Code2, Star, Vote, Heart, type LucideIcon } from 'lucide-react'
 
 function rankColor(position: number) {
   if (position === 1) return 'text-[#9810fa]'
@@ -42,6 +42,11 @@ export default function AdminDashboardPage() {
     api.hackathons.getParticipantsRanked,
     selectedId ? { hackathonId: selectedId } : 'skip',
   )
+  const voteCounts = useQuery(
+    api.hackathons.getVoteCounts,
+    selectedId ? { hackathonId: selectedId } : 'skip',
+  )
+  const toggleVoting = useMutation(api.mutations.toggleVoting)
 
   const totalMembers = useMemo(
     () => rankedTeams?.reduce((sum, t) => sum + t.memberNames.length, 0) ?? 0,
@@ -134,6 +139,64 @@ export default function AdminDashboardPage() {
 
       {!selectedId && (
         <p className="text-sm text-[#636363]">Selecione um hackathon para ver os dados.</p>
+      )}
+
+      {/* Voting control */}
+      {selectedId && hackathon && (
+        <FadeUp delay={0.35}>
+          <div className="mb-6 rounded-xl border border-white/[0.08] bg-[#2a2a2b] p-6">
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded border border-[#9810fa]/30 bg-[#9810fa]/15">
+                  <Vote className="h-5 w-5 text-[#9810fa]" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-white">Voto Popular</h2>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#636363]">
+                    {hackathon.votingOpen ? 'Aberto' : 'Fechado'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => toggleVoting({ hackathonId: hackathon._id, votingOpen: !hackathon.votingOpen })}
+                className={`relative h-7 w-12 rounded-full border transition-colors ${
+                  hackathon.votingOpen
+                    ? 'border-[#9810fa]/30 bg-[#9810fa]'
+                    : 'border-white/10 bg-white/10'
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all shadow-sm ${
+                    hackathon.votingOpen ? 'left-[22px]' : 'left-[2px]'
+                  }`}
+                />
+              </button>
+            </div>
+
+            {voteCounts && voteCounts.some(v => v.voteCount > 0) && (
+              <div className="space-y-2">
+                {voteCounts.filter(v => v.voteCount > 0).map((entry, i) => (
+                  <div key={entry.teamId} className="flex items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-white/[0.04]">
+                    <div className="flex items-center gap-3">
+                      <span className={`w-5 text-sm font-black ${
+                        i === 0 ? 'text-[#9810fa]' : i === 1 ? 'text-[#2debb1]' : 'text-[#636363]'
+                      }`}>#{i + 1}</span>
+                      <span className="text-sm font-semibold text-white">{entry.teamName}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Heart className={`h-3.5 w-3.5 ${i === 0 ? 'fill-[#9810fa]/30 text-[#9810fa]' : 'text-[#636363]'}`} />
+                      <span className="text-sm font-black tabular-nums text-white">{entry.voteCount}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {voteCounts && !voteCounts.some(v => v.voteCount > 0) && (
+              <p className="text-sm text-[#636363]">Nenhum voto registrado ainda.</p>
+            )}
+          </div>
+        </FadeUp>
       )}
 
       {selectedId && rankedTeams && rankedParticipants && (

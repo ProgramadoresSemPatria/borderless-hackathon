@@ -1,19 +1,5 @@
-'use client'
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { isAuthenticated } from '@/lib/auth'
-
+// Auth is enforced server-side via middleware.ts + signed httpOnly cookie.
+// This component is kept as a pass-through for backwards compatibility.
 export function AdminGuard({ children }: { children: React.ReactNode }) {
-  const router = useRouter()
-  const authenticated = isAuthenticated()
-
-  useEffect(() => {
-    if (!authenticated) {
-      router.replace('/admin')
-    }
-  }, [router, authenticated])
-
-  if (!authenticated) return null
-
   return <>{children}</>
 }

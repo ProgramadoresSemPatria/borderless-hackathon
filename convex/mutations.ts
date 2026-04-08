@@ -33,6 +33,7 @@ export const updateHackathon = mutation({
       ),
     ),
     criteria: v.optional(v.array(v.string())),
+    votingOpen: v.optional(v.boolean()),
   },
   handler: async (ctx, { id, ...patch }) => {
     await ctx.db.patch(id, patch)
@@ -221,5 +222,51 @@ export const bulkImport = mutation({
       }
     }
     return { teamCount, participantCount }
+  },
+})
+
+export const toggleVoting = mutation({
+  args: {
+    hackathonId: v.id('hackathons'),
+    votingOpen: v.boolean(),
+  },
+  handler: async (ctx, { hackathonId, votingOpen }) => {
+    await ctx.db.patch(hackathonId, { votingOpen })
+  },
+})
+
+export const castVote = mutation({
+  args: {
+    hackathonId: v.id('hackathons'),
+    teamId: v.id('teams'),
+  },
+  handler: async (ctx, { hackathonId, teamId }) => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) throw new Error('Você precisa estar logado para votar')
+    const userId = identity.subject
+
+    const hackathon = await ctx.db.get(hackathonId)
+    if (!hackathon) throw new Error('Hackathon não encontrado')
+    if (!hackathon.votingOpen) throw new Error('Votação não está aberta')
+
+    const existing = await ctx.db
+      .query('votes')
+      .withIndex('by_hackathon_user', (q) =>
+        q.eq('hackathonId', hackathonId).eq('userId', userId),
+      )
+      .unique()
+    if (existing) throw new Error('Você já votou neste hackathon')
+
+    const team = await ctx.db.get(teamId)
+    if (!team || team.hackathonId !== hackathonId) {
+      throw new Error('Time não encontrado neste hackathon')
+    }
+
+    await ctx.db.insert('votes', {
+      hackathonId,
+      teamId,
+      userId,
+      createdAt: Date.now(),
+    })
   },
 })
