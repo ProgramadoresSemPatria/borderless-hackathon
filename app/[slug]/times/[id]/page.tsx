@@ -51,7 +51,9 @@ export default async function SlugTeamDetailPage({
               )}
               <h1 className="mb-1 text-3xl font-extrabold text-white">{team.name}</h1>
               <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#636363]">{team.project}</p>
-              <p className="mb-4 text-[#b2b2b2]">{team.description}</p>
+              {team.description && (
+                <p className="mb-4 whitespace-pre-wrap text-[#b2b2b2]">{team.description}</p>
+              )}
               <div className="flex flex-wrap gap-1">
                 {team.tags.map(tag => (
                   <span key={tag} className="rounded border border-white/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#636363]">

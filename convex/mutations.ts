@@ -22,6 +22,7 @@ export const createHackathon = mutation({
 export const updateHackathon = mutation({
   args: {
     id: v.id('hackathons'),
+    slug: v.optional(v.string()),
     name: v.optional(v.string()),
     edition: v.optional(v.string()),
     date: v.optional(v.string()),
@@ -36,7 +37,49 @@ export const updateHackathon = mutation({
     votingOpen: v.optional(v.boolean()),
   },
   handler: async (ctx, { id, ...patch }) => {
+    if (patch.slug) {
+      const existing = await ctx.db
+        .query('hackathons')
+        .withIndex('by_slug', (q) => q.eq('slug', patch.slug!))
+        .unique()
+      if (existing && existing._id !== id) {
+        throw new Error('Já existe um hackathon com esse slug')
+      }
+    }
     await ctx.db.patch(id, patch)
+  },
+})
+
+export const deleteHackathon = mutation({
+  args: { id: v.id('hackathons') },
+  handler: async (ctx, { id }) => {
+    const teams = await ctx.db
+      .query('teams')
+      .withIndex('by_hackathon', (q) => q.eq('hackathonId', id))
+      .collect()
+    for (const team of teams) {
+      const scores = await ctx.db
+        .query('scores')
+        .withIndex('by_team', (q) => q.eq('teamId', team._id))
+        .collect()
+      for (const s of scores) await ctx.db.delete(s._id)
+
+      const parts = await ctx.db
+        .query('participants')
+        .withIndex('by_team', (q) => q.eq('teamId', team._id))
+        .collect()
+      for (const p of parts) await ctx.db.delete(p._id)
+
+      await ctx.db.delete(team._id)
+    }
+
+    const votes = await ctx.db
+      .query('votes')
+      .withIndex('by_hackathon', (q) => q.eq('hackathonId', id))
+      .collect()
+    for (const vote of votes) await ctx.db.delete(vote._id)
+
+    await ctx.db.delete(id)
   },
 })
 

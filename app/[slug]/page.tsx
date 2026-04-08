@@ -20,7 +20,6 @@ export default async function SlugPage({
 
   const topTeam = teams[0]
   const secondTeam = teams[1]
-  const mvp = participants[0]
 
   return (
     <>
@@ -31,9 +30,17 @@ export default async function SlugPage({
           name={hackathon.name}
           edition={hackathon.edition}
           date={hackathon.date}
+          status={hackathon.status}
+          votingOpen={hackathon.votingOpen ?? false}
+          criteria={hackathon.criteria}
           participantCount={participants.length}
           teamCount={teams.length}
           criteriaCount={hackathon.criteria.length}
+          topTeam={
+            topTeam
+              ? { name: topTeam.name, score: topTeam.totalScore ?? 0 }
+              : null
+          }
         />
 
         {/* ── Highlights ─────────────────────────────────────────────── */}
@@ -77,7 +84,7 @@ export default async function SlugPage({
 
           {/* 2nd place */}
           <FadeUp delay={0.1}>
-            <div className="group flex items-start justify-between gap-8 border-t border-white/[0.08] py-8 transition-colors hover:border-white/[0.16]">
+            <div className="group flex items-start justify-between gap-8 border-t border-b border-white/[0.08] py-8 transition-colors hover:border-white/[0.16]">
               <div className="flex items-start gap-8">
                 <span className="w-10 flex-shrink-0 text-sm font-black uppercase tracking-[0.2em] text-[#2debb1]">
                   02
@@ -99,43 +106,6 @@ export default async function SlugPage({
             </div>
           </FadeUp>
 
-          {/* MVP */}
-          <FadeUp delay={0.15}>
-            <div className="group flex items-start justify-between gap-8 border-t border-b border-white/[0.08] py-8 transition-colors hover:border-white/[0.16]">
-              <div className="flex items-start gap-8">
-                <span className="w-10 flex-shrink-0 text-sm font-black uppercase tracking-[0.2em] text-[#636363]">
-                  MVP
-                </span>
-                <div>
-                  <h3 className="text-2xl font-black leading-tight text-white sm:text-3xl">
-                    {mvp?.name}
-                  </h3>
-                  <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#636363]">
-                    Embaixador de maior destaque
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-shrink-0 items-start gap-8 text-right">
-                <div>
-                  <div className="text-3xl font-black tabular-nums text-[#9810fa]">
-                    <CountingNumber value={mvp?.metrics.totalPoints ?? 0} />
-                  </div>
-                  <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#636363]">
-                    pontos
-                  </div>
-                </div>
-                <div>
-                  <div className="text-3xl font-black tabular-nums text-white">
-                    <CountingNumber value={mvp?.metrics.attendance ?? 0} />
-                    <span className="text-xl">%</span>
-                  </div>
-                  <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#636363]">
-                    presença
-                  </div>
-                </div>
-              </div>
-            </div>
-          </FadeUp>
         </section>
       </main>
     </>
