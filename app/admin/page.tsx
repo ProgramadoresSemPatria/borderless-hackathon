@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { login } from '@/lib/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,6 +9,7 @@ import { Lock } from 'lucide-react'
 
 export default function AdminLoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -18,10 +19,12 @@ export default function AdminLoginPage() {
     setLoading(true)
     setError('')
 
-    await new Promise(r => setTimeout(r, 300))
-
-    if (login(password)) {
-      router.push('/admin/dashboard')
+    if (await login(password)) {
+      const next = searchParams.get('next')
+      // Only allow same-origin internal admin paths to prevent open-redirect
+      const target = next && next.startsWith('/admin') ? next : '/admin/dashboard'
+      router.push(target)
+      router.refresh()
     } else {
       setError('Senha incorreta. Tente novamente.')
       setLoading(false)

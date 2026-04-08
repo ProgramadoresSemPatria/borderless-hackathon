@@ -1,19 +1,12 @@
-const SESSION_KEY = 'bl_admin_auth'
-
-export function login(password: string): boolean {
-  const correct = process.env.NEXT_PUBLIC_ADMIN_PASSWORD ?? 'borderless2026'
-  if (password === correct) {
-    sessionStorage.setItem(SESSION_KEY, 'true')
-    return true
-  }
-  return false
+export async function login(password: string): Promise<boolean> {
+  const res = await fetch('/api/admin/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password }),
+  })
+  return res.ok
 }
 
-export function logout(): void {
-  sessionStorage.removeItem(SESSION_KEY)
-}
-
-export function isAuthenticated(): boolean {
-  if (typeof window === 'undefined') return false
-  return sessionStorage.getItem(SESSION_KEY) === 'true'
+export async function logout(): Promise<void> {
+  await fetch('/api/admin/logout', { method: 'POST' })
 }

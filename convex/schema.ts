@@ -13,6 +13,7 @@ export default defineSchema({
       v.literal('finished'),
     ),
     criteria: v.array(v.string()),
+    votingOpen: v.optional(v.boolean()),
   }).index('by_slug', ['slug']),
 
   teams: defineTable({
@@ -48,5 +49,15 @@ export default defineSchema({
     value: v.number(),
   })
     .index('by_team', ['teamId'])
+    .index('by_hackathon_team', ['hackathonId', 'teamId']),
+
+  votes: defineTable({
+    hackathonId: v.id('hackathons'),
+    teamId: v.id('teams'),
+    userId: v.string(),
+    createdAt: v.number(),
+  })
+    .index('by_hackathon', ['hackathonId'])
+    .index('by_hackathon_user', ['hackathonId', 'userId'])
     .index('by_hackathon_team', ['hackathonId', 'teamId']),
 })

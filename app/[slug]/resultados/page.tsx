@@ -7,6 +7,7 @@ import { ScoreBar } from '@/components/public/score-bar'
 import { HeroReveal } from '@/components/animated/hero-reveal'
 import { BlurText } from '@/components/animated/blur-text'
 import { FadeUp } from '@/components/animated/fade-up'
+import { Heart } from 'lucide-react'
 import type { Team } from '@/lib/types'
 
 function rankColor(position: number | null) {
@@ -28,6 +29,8 @@ export default async function SlugResultadosPage({
 
   const teams = await fetchQuery(api.hackathons.getTeamsRanked, { hackathonId: hackathon._id })
   const participants = await fetchQuery(api.hackathons.getParticipantsRanked, { hackathonId: hackathon._id })
+  const voteCounts = await fetchQuery(api.hackathons.getVoteCounts, { hackathonId: hackathon._id })
+  const topVoted = voteCounts.filter((v) => v.voteCount > 0).slice(0, 3)
 
   return (
     <>
@@ -129,6 +132,50 @@ export default async function SlugResultadosPage({
             ))}
           </div>
         </section>
+
+        {/* Voto Popular */}
+        {topVoted.length > 0 && (
+          <section className="mb-20">
+            <FadeUp>
+              <h2 className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-[#636363]">
+                Voto Popular
+              </h2>
+            </FadeUp>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {topVoted.map((entry, i) => (
+                <FadeUp key={entry.teamId} delay={i * 0.06}>
+                  <div className={`rounded-xl border p-6 ${
+                    i === 0
+                      ? 'border-[#9810fa]/30 bg-[#9810fa]/[0.06]'
+                      : i === 1
+                        ? 'border-[#2debb1]/20 bg-[#2debb1]/[0.04]'
+                        : 'border-white/[0.08] bg-[#2a2a2b]'
+                  }`}>
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className={`text-3xl font-black tabular-nums ${
+                        i === 0 ? 'text-[#9810fa]' : i === 1 ? 'text-[#2debb1]' : 'text-white/60'
+                      }`}>
+                        #{i + 1}
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <Heart className={`h-4 w-4 ${
+                          i === 0 ? 'fill-[#9810fa]/30 text-[#9810fa]' : 'text-[#636363]'
+                        }`} />
+                        <span className="text-lg font-black tabular-nums text-white">
+                          {entry.voteCount}
+                        </span>
+                      </div>
+                    </div>
+                    <h3 className="text-lg font-black text-white">{entry.teamName}</h3>
+                    <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#636363]">
+                      {entry.project}
+                    </p>
+                  </div>
+                </FadeUp>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Individual Leaderboard */}
         <section>
