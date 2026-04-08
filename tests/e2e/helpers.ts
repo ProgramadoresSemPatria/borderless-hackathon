@@ -1,10 +1,11 @@
 import { Page, expect } from '@playwright/test'
 
-export const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123'
+export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'
 
 /**
  * Logs into /admin and waits for redirect to /admin/dashboard.
- * Auth is sessionStorage-based (`bl_admin_auth`), so each test starts fresh.
+ * Auth is httpOnly cookie-based (POST /api/admin/login → bl_admin_session),
+ * verified server-side. Each test gets a fresh browser context.
  */
 export async function adminLogin(page: Page) {
   await page.goto('/admin')

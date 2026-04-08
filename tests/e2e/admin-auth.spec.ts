@@ -15,9 +15,7 @@ test.describe('admin authentication', () => {
     await expect(page).toHaveURL(/\/admin$/)
   })
 
-  // REGRESSION: login currently hardcodes /admin/dashboard, ignoring `?next=`.
-  // Re-enable when bug is fixed.
-  test.skip('login honors ?next= query param', async ({ page }) => {
+  test('login honors ?next= query param', async ({ page }) => {
     await page.goto('/admin?next=/admin/teams')
     await page.getByPlaceholder('••••••••').fill(ADMIN_PASSWORD)
     await page.getByRole('button', { name: 'Entrar' }).click()
