@@ -13,29 +13,31 @@
 - Gradient text utility: `.gradient-brand-text` class (or `<GradientText>` component)
 
 ## Auth
-- Admin password: `.env.local` → `NEXT_PUBLIC_ADMIN_PASSWORD`
-- Auth state: `sessionStorage` key `bl_admin_auth`
-- Client-side guard: `components/admin/admin-guard.tsx`
+- Admin password: `.env.local` → `ADMIN_PASSWORD` (server-only, never `NEXT_PUBLIC_*`)
+- Session secret: `.env.local` → `ADMIN_SESSION_SECRET` (HMAC key, min 16 chars)
+- Auth flow: POST `/api/admin/login` → httpOnly signed cookie `bl_admin_session` → verified in `middleware.ts` via `lib/admin-session.ts`
+- Logout: POST `/api/admin/logout`
 
 ## Data
-- All data mocked in `lib/mock-data.ts`
+- Backend: Convex (`convex/schema.ts`, `convex/hackathons.ts`, `convex/mutations.ts`)
 - Types in `lib/types.ts`
 - Excel utilities in `lib/excel.ts`
+- Anonymous voter id: `lib/visitor.ts` (cookie-based, used to block double-vote)
 
 ## Routes
-### Public
-- `/` — Home
-- `/resultados` — Results
-- `/times` — Teams list
-- `/times/[id]` — Team detail
+### Public (per-hackathon by slug)
+- `/` — Home (lists hackathons or empty state)
+- `/[slug]` — Hackathon home
+- `/[slug]/resultados` — Pódio + ranking de times + leaderboard individual
+- `/[slug]/times` — Lista de times
+- `/[slug]/times/[id]` — Detalhe do time
+- `/[slug]/votar` — Voto popular (gated by `votingOpen` flag toggled in admin dashboard)
 
 ### Admin (password-protected)
-- `/admin` — Login
-- `/admin/dashboard` — Overview
-- `/admin/teams` — Manage teams + scores
-- `/admin/participants` — Manage participants
-- `/admin/import` — Excel import
-- `/admin/export` — Excel export
+- `/admin` — Login (honors `?next=` query param for post-login redirect)
+- `/admin/dashboard` — Overview, criar hackathon, toggle votação
+- `/admin/teams` — CRUD times, scores (sliders na tab "Notas"), Importar/Exportar Excel (botões na própria página)
+- `/admin/participants` — CRUD participantes
 
 ## Dev
 ```bash

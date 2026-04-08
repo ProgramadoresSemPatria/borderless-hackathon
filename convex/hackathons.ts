@@ -102,3 +102,48 @@ export const getTeam = query({
     return { ...team, scores: scoresArray, totalScore, members }
   },
 })
+
+export const getVoteCounts = query({
+  args: { hackathonId: v.id('hackathons') },
+  handler: async (ctx, { hackathonId }) => {
+    const votes = await ctx.db
+      .query('votes')
+      .withIndex('by_hackathon', (q) => q.eq('hackathonId', hackathonId))
+      .collect()
+
+    const counts: Record<string, number> = {}
+    for (const vote of votes) {
+      counts[vote.teamId] = (counts[vote.teamId] || 0) + 1
+    }
+
+    const teams = await ctx.db
+      .query('teams')
+      .withIndex('by_hackathon', (q) => q.eq('hackathonId', hackathonId))
+      .collect()
+
+    return teams
+      .map((team) => ({
+        teamId: team._id,
+        teamName: team.name,
+        project: team.project,
+        voteCount: counts[team._id] || 0,
+      }))
+      .sort((a, b) => b.voteCount - a.voteCount)
+  },
+})
+
+export const getMyVote = query({
+  args: {
+    hackathonId: v.id('hackathons'),
+  },
+  handler: async (ctx, { hackathonId }) => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) return null
+    return await ctx.db
+      .query('votes')
+      .withIndex('by_hackathon_user', (q) =>
+        q.eq('hackathonId', hackathonId).eq('userId', identity.subject),
+      )
+      .unique()
+  },
+})
