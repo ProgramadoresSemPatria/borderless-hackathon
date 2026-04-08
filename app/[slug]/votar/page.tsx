@@ -12,7 +12,7 @@ import { Vote, X, Check, Lock, LogIn } from 'lucide-react'
 
 export default function VotarPage() {
   const { slug } = useParams<{ slug: string }>()
-  const { isSignedIn } = useUser()
+  const { isSignedIn, isLoaded: clerkLoaded } = useUser()
   const [confirmTeamId, setConfirmTeamId] = useState<string | null>(null)
   const [voteError, setVoteError] = useState<string | null>(null)
   const [justVoted, setJustVoted] = useState(false)
@@ -51,8 +51,10 @@ export default function VotarPage() {
   const hasVoted = !!myVote
   const votingOpen = hackathon?.votingOpen === true
 
-  // Loading state
-  if (!hackathon || !teams) {
+  // Loading state — wait for Convex data AND Clerk hydration
+  // (and, when signed in, until the user's vote query has resolved
+  // to avoid a flicker showing "you haven't voted" before getMyVote returns)
+  if (!hackathon || !teams || !clerkLoaded || (isSignedIn && myVote === undefined)) {
     return (
       <>
         <PublicNavbar slug={slug} />
