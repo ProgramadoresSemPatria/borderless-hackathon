@@ -5,5 +5,8 @@
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "binding": "ASSETS"
-  }
+  },
+  "routes": [
+    { "pattern": "hackathon.borderlesscoding.com", "custom_domain": true }
+  ]
 }
