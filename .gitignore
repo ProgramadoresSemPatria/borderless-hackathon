@@ -51,3 +51,6 @@ next-env.d.ts
 # playwright e2e artifacts
 /playwright-report/
 /test-results/
+
+# opennext cloudflare build output
+.open-next/

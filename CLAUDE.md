@@ -5,6 +5,7 @@
 - shadcn/ui for admin UI components
 - Framer Motion for animations
 - xlsx for Excel import/export
+- Deploy target: Cloudflare Pages via `@opennextjs/cloudflare`
 
 ## Key Conventions
 - Dark theme only: background `#222`, surface `#2a2a2b`, brand purple `#9810fa`, brand teal `#2debb1`
@@ -44,4 +45,12 @@
 pnpm dev          # start dev server
 npx tsc --noEmit  # type check
 pnpm lint         # lint check
+pnpm build:cf     # build for Cloudflare Pages
+pnpm preview:cf   # preview Cloudflare build locally
+pnpm deploy       # deploy to Cloudflare Workers
 ```
+
+## Deploy (Cloudflare)
+- Middleware uses `middleware.ts` (deprecated but required — `proxy.ts` forces Node.js runtime, incompatible with Cloudflare Workers edge)
+- Config: `wrangler.jsonc` + `open-next.config.ts`
+- Build output: `.open-next/` (gitignored)
