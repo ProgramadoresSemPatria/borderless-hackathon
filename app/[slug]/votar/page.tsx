@@ -177,6 +177,7 @@ export default function VotarPage() {
                   <VoteCard
                     key={team._id}
                     team={team}
+                    slug={slug}
                     voteCount={count}
                     isSelected={myVote?.teamId === team._id}
                     hasVoted={hasVoted}

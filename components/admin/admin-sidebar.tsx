@@ -4,11 +4,12 @@ import { usePathname, useRouter } from 'next/navigation'
 import { logout } from '@/lib/auth'
 import { motion } from 'framer-motion'
 import {
-  LayoutDashboard, Users, Trophy, LogOut
+  LayoutDashboard, Users, Trophy, LogOut, Rocket
 } from 'lucide-react'
 
 const links = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/hackathons', label: 'Hackathons', icon: Rocket },
   { href: '/admin/teams', label: 'Times', icon: Trophy },
   { href: '/admin/participants', label: 'Participantes', icon: Users },
 ]

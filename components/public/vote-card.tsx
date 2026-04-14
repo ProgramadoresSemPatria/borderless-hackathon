@@ -1,6 +1,7 @@
 'use client'
 import { motion } from 'framer-motion'
-import { Users, Check, Heart } from 'lucide-react'
+import Link from 'next/link'
+import { Users, Check, Heart, ArrowUpRight } from 'lucide-react'
 
 interface VoteCardProps {
   team: {
@@ -11,6 +12,7 @@ interface VoteCardProps {
     tags: string[]
     memberNames: string[]
   }
+  slug: string
   voteCount: number
   isSelected: boolean
   hasVoted: boolean
@@ -21,6 +23,7 @@ interface VoteCardProps {
 
 export function VoteCard({
   team,
+  slug,
   voteCount,
   isSelected,
   hasVoted,
@@ -28,6 +31,7 @@ export function VoteCard({
   disabled,
   index,
 }: VoteCardProps) {
+  const detailHref = `/${slug}/times/${team._id}`
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -55,7 +59,13 @@ export function VoteCard({
 
       {/* Team info */}
       <div className="mb-4">
-        <h3 className="text-xl font-black leading-tight text-white">{team.name}</h3>
+        <Link
+          href={detailHref}
+          className="group/title inline-flex items-center gap-2 text-xl font-black leading-tight text-white transition-colors hover:text-[#9810fa]"
+        >
+          <span>{team.name}</span>
+          <ArrowUpRight className="h-4 w-4 text-white/30 transition-all group-hover/title:-translate-y-0.5 group-hover/title:translate-x-0.5 group-hover/title:text-[#9810fa]" />
+        </Link>
         <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#636363]">
           {team.project}
         </p>
