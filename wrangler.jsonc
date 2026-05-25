@@ -1,10 +1,13 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "borderless-hackathon",
+  "account_id": "b63c927b315361a1d6832f89c6ef9ed8",
+  "main": ".open-next/worker.js",
   "compatibility_date": "2025-04-01",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    "directory": ".open-next/assets"
   },
   "routes": [
     { "pattern": "hackathon.borderlesscoding.com", "custom_domain": true }
