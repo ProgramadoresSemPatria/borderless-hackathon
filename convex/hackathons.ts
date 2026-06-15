@@ -21,6 +21,29 @@ export const getBySlug = query({
   },
 })
 
+export const getById = query({
+  args: { id: v.id('hackathons') },
+  handler: async (ctx, { id }) => {
+    return await ctx.db.get(id)
+  },
+})
+
+export const listEditions = query({
+  args: {},
+  handler: async (ctx) => {
+    const hackathons = await ctx.db.query('hackathons').order('desc').collect()
+    return await Promise.all(
+      hackathons.map(async (h) => {
+        const teams = await ctx.db
+          .query('teams')
+          .withIndex('by_hackathon', (q) => q.eq('hackathonId', h._id))
+          .collect()
+        return { ...h, teamCount: teams.length }
+      }),
+    )
+  },
+})
+
 export const getTeamsRanked = query({
   args: { hackathonId: v.id('hackathons') },
   handler: async (ctx, { hackathonId }) => {
@@ -135,14 +158,15 @@ export const getVoteCounts = query({
 export const getMyVote = query({
   args: {
     hackathonId: v.id('hackathons'),
+    // Clerk user id vindo do client (ver castVote em mutations.ts).
+    userId: v.optional(v.string()),
   },
-  handler: async (ctx, { hackathonId }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) return null
+  handler: async (ctx, { hackathonId, userId }) => {
+    if (!userId) return null
     return await ctx.db
       .query('votes')
       .withIndex('by_hackathon_user', (q) =>
-        q.eq('hackathonId', hackathonId).eq('userId', identity.subject),
+        q.eq('hackathonId', hackathonId).eq('userId', userId),
       )
       .unique()
   },

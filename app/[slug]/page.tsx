@@ -47,13 +47,13 @@ export default async function SlugPage({
 
           {/* 1st place */}
           <FadeUp delay={0.05}>
-            <div className="group flex items-start justify-between gap-8 border-t border-white/[0.08] py-10 transition-colors hover:border-white/[0.16]">
-              <div className="flex items-start gap-8">
-                <span className="w-10 flex-shrink-0 text-sm font-black uppercase tracking-[0.2em] text-[#9810fa]">
+            <div className="group flex flex-col gap-4 border-t border-white/[0.08] py-10 transition-colors hover:border-white/[0.16] sm:flex-row sm:items-start sm:justify-between sm:gap-8">
+              <div className="flex items-start gap-4 sm:gap-8">
+                <span className="w-7 flex-shrink-0 text-sm font-black uppercase tracking-[0.2em] text-[#9810fa] sm:w-10">
                   01
                 </span>
                 <div>
-                  <h3 className="text-4xl font-black leading-tight text-white sm:text-5xl">
+                  <h3 className="text-3xl font-black leading-tight text-white sm:text-5xl">
                     {topTeam?.name}
                   </h3>
                   <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#636363]">
@@ -64,8 +64,8 @@ export default async function SlugPage({
                   )}
                 </div>
               </div>
-              <div className="flex-shrink-0 text-right">
-                <div className="text-5xl font-black tabular-nums text-[#9810fa]">
+              <div className="flex-shrink-0 pl-11 text-left sm:pl-0 sm:text-right">
+                <div className="text-4xl font-black tabular-nums text-[#9810fa] sm:text-5xl">
                   <CountingNumber value={topTeam?.totalScore ?? 0} decimals={2} />
                 </div>
                 <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#636363]">
@@ -77,9 +77,9 @@ export default async function SlugPage({
 
           {/* 2nd place */}
           <FadeUp delay={0.1}>
-            <div className="group flex items-start justify-between gap-8 border-t border-white/[0.08] py-8 transition-colors hover:border-white/[0.16]">
-              <div className="flex items-start gap-8">
-                <span className="w-10 flex-shrink-0 text-sm font-black uppercase tracking-[0.2em] text-[#2debb1]">
+            <div className="group flex flex-col gap-3 border-t border-white/[0.08] py-8 transition-colors hover:border-white/[0.16] sm:flex-row sm:items-start sm:justify-between sm:gap-8">
+              <div className="flex items-start gap-4 sm:gap-8">
+                <span className="w-7 flex-shrink-0 text-sm font-black uppercase tracking-[0.2em] text-[#2debb1] sm:w-10">
                   02
                 </span>
                 <div>
@@ -91,7 +91,7 @@ export default async function SlugPage({
                   </p>
                 </div>
               </div>
-              <div className="flex-shrink-0 text-right">
+              <div className="flex-shrink-0 pl-11 text-left sm:pl-0 sm:text-right">
                 <div className="text-3xl font-black tabular-nums text-[#2debb1]">
                   <CountingNumber value={secondTeam?.totalScore ?? 0} decimals={2} />
                 </div>
@@ -101,9 +101,9 @@ export default async function SlugPage({
 
           {/* MVP */}
           <FadeUp delay={0.15}>
-            <div className="group flex items-start justify-between gap-8 border-t border-b border-white/[0.08] py-8 transition-colors hover:border-white/[0.16]">
-              <div className="flex items-start gap-8">
-                <span className="w-10 flex-shrink-0 text-sm font-black uppercase tracking-[0.2em] text-[#636363]">
+            <div className="group flex flex-col gap-3 border-t border-b border-white/[0.08] py-8 transition-colors hover:border-white/[0.16] sm:flex-row sm:items-start sm:justify-between sm:gap-8">
+              <div className="flex items-start gap-4 sm:gap-8">
+                <span className="w-7 flex-shrink-0 text-sm font-black uppercase tracking-[0.2em] text-[#636363] sm:w-10">
                   MVP
                 </span>
                 <div>
@@ -115,7 +115,7 @@ export default async function SlugPage({
                   </p>
                 </div>
               </div>
-              <div className="flex flex-shrink-0 items-start gap-8 text-right">
+              <div className="flex flex-shrink-0 items-start gap-8 pl-11 text-left sm:pl-0 sm:text-right">
                 <div>
                   <div className="text-3xl font-black tabular-nums text-[#9810fa]">
                     <CountingNumber value={mvp?.metrics?.totalPoints ?? 0} />

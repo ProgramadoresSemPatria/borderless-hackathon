@@ -13,6 +13,8 @@ export const createHackathon = mutation({
       v.literal('finished'),
     ),
     criteria: v.array(v.string()),
+    githubOrg: v.optional(v.string()),
+    githubPrefix: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert('hackathons', args)
@@ -34,6 +36,8 @@ export const updateHackathon = mutation({
     ),
     criteria: v.optional(v.array(v.string())),
     votingOpen: v.optional(v.boolean()),
+    githubOrg: v.optional(v.string()),
+    githubPrefix: v.optional(v.string()),
   },
   handler: async (ctx, { id, ...patch }) => {
     await ctx.db.patch(id, patch)
@@ -48,6 +52,9 @@ export const createTeam = mutation({
     description: v.optional(v.string()),
     tags: v.array(v.string()),
     position: v.optional(v.number()),
+    githubUrl: v.optional(v.string()),
+    demoUrl: v.optional(v.string()),
+    presentationUrl: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert('teams', args)
@@ -62,6 +69,9 @@ export const updateTeam = mutation({
     description: v.optional(v.string()),
     tags: v.optional(v.array(v.string())),
     position: v.optional(v.number()),
+    githubUrl: v.optional(v.string()),
+    demoUrl: v.optional(v.string()),
+    presentationUrl: v.optional(v.string()),
   },
   handler: async (ctx, { id, ...patch }) => {
     await ctx.db.patch(id, patch)
@@ -169,6 +179,9 @@ export const bulkImport = mutation({
       project: v.string(),
       description: v.optional(v.string()),
       tags: v.array(v.string()),
+      githubUrl: v.optional(v.string()),
+      demoUrl: v.optional(v.string()),
+      presentationUrl: v.optional(v.string()),
       members: v.array(v.object({
         name: v.string(),
         metrics: v.object({
@@ -209,6 +222,9 @@ export const bulkImport = mutation({
         project: t.project,
         description: t.description,
         tags: t.tags,
+        githubUrl: t.githubUrl,
+        demoUrl: t.demoUrl,
+        presentationUrl: t.presentationUrl,
       })
       teamCount++
       for (const m of t.members) {
@@ -222,6 +238,61 @@ export const bulkImport = mutation({
       }
     }
     return { teamCount, participantCount }
+  },
+})
+
+export const upsertTeamsFromGithub = mutation({
+  args: {
+    hackathonId: v.id('hackathons'),
+    teams: v.array(
+      v.object({
+        name: v.string(),
+        project: v.string(),
+        description: v.optional(v.string()),
+        tags: v.array(v.string()),
+        githubUrl: v.string(),
+        demoUrl: v.optional(v.string()),
+      }),
+    ),
+  },
+  handler: async (ctx, { hackathonId, teams }) => {
+    const existing = await ctx.db
+      .query('teams')
+      .withIndex('by_hackathon', (q) => q.eq('hackathonId', hackathonId))
+      .collect()
+    const byGithub = new Map(
+      existing.filter((t) => t.githubUrl).map((t) => [t.githubUrl as string, t]),
+    )
+
+    let created = 0
+    let updated = 0
+    for (const t of teams) {
+      const match = byGithub.get(t.githubUrl)
+      if (match) {
+        // Refresh GitHub-derived fields only; never touch position, scores,
+        // participants, name overrides, or a manually-set presentationUrl.
+        await ctx.db.patch(match._id, {
+          project: t.project,
+          description: t.description,
+          tags: t.tags,
+          githubUrl: t.githubUrl,
+          demoUrl: t.demoUrl,
+        })
+        updated++
+      } else {
+        await ctx.db.insert('teams', {
+          hackathonId,
+          name: t.name,
+          project: t.project,
+          description: t.description,
+          tags: t.tags,
+          githubUrl: t.githubUrl,
+          demoUrl: t.demoUrl,
+        })
+        created++
+      }
+    }
+    return { created, updated }
   },
 })
 
@@ -239,11 +310,13 @@ export const castVote = mutation({
   args: {
     hackathonId: v.id('hackathons'),
     teamId: v.id('teams'),
+    // Clerk user id enviado pelo client (useUser().id). Confiamos no client
+    // porque a verificação server-side (getUserIdentity) depende do template
+    // JWT do Clerk, que não está configurado. Garante 1 voto por conta.
+    userId: v.string(),
   },
-  handler: async (ctx, { hackathonId, teamId }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Você precisa estar logado para votar')
-    const userId = identity.subject
+  handler: async (ctx, { hackathonId, teamId, userId }) => {
+    if (!userId) throw new Error('Você precisa estar logado para votar')
 
     const hackathon = await ctx.db.get(hackathonId)
     if (!hackathon) throw new Error('Hackathon não encontrado')

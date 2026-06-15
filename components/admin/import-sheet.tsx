@@ -142,7 +142,22 @@ export function ImportSheet({ hackathonId, open, onClose, defaultMode = 'both' }
         name: string
         metrics: { tasksCompleted: number; attendance: number; contributions: number; totalPoints: number }
       }
-      type TeamInput = { name: string; project: string; description?: string; tags: string[]; members: MemberInput[] }
+      type TeamInput = {
+        name: string
+        project: string
+        description?: string
+        tags: string[]
+        githubUrl?: string
+        demoUrl?: string
+        presentationUrl?: string
+        members: MemberInput[]
+      }
+
+      const urlFields = (t: ImportedTeamRow) => ({
+        githubUrl: t.GitHub ? String(t.GitHub).trim() || undefined : undefined,
+        demoUrl: t.Demo ? String(t.Demo).trim() || undefined : undefined,
+        presentationUrl: t.Apresentacao ? String(t.Apresentacao).trim() || undefined : undefined,
+      })
 
       let mergedTeams: TeamInput[]
 
@@ -152,6 +167,7 @@ export function ImportSheet({ hackathonId, open, onClose, defaultMode = 'both' }
           project: String(t.Projeto).trim(),
           description: t.Descricao ? String(t.Descricao).trim() : undefined,
           tags: [],
+          ...urlFields(t),
           members: [],
         }))
       } else if (mode === 'participants-only') {
@@ -178,6 +194,7 @@ export function ImportSheet({ hackathonId, open, onClose, defaultMode = 'both' }
           project: String(t.Projeto).trim(),
           description: t.Descricao ? String(t.Descricao).trim() : undefined,
           tags: [],
+          ...urlFields(t),
           members: participants
             .filter((p) => String(p.Time).trim() === String(t.Nome).trim())
             .map((p) => ({

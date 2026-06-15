@@ -14,6 +14,8 @@ export default defineSchema({
     ),
     criteria: v.array(v.string()),
     votingOpen: v.optional(v.boolean()),
+    githubOrg: v.optional(v.string()),
+    githubPrefix: v.optional(v.string()),
   }).index('by_slug', ['slug']),
 
   teams: defineTable({
@@ -23,6 +25,9 @@ export default defineSchema({
     description: v.optional(v.string()),
     tags: v.array(v.string()),
     position: v.optional(v.number()),
+    githubUrl: v.optional(v.string()),
+    demoUrl: v.optional(v.string()),
+    presentationUrl: v.optional(v.string()),
   }).index('by_hackathon', ['hackathonId']),
 
   participants: defineTable({

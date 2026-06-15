@@ -138,7 +138,7 @@ export function HeroSection({
 
             {/* Stats */}
             <motion.div
-              className="flex items-center gap-8"
+              className="flex items-center gap-5 sm:gap-8"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8, ease: E }}
@@ -169,6 +169,22 @@ export function HeroSection({
                   Critérios
                 </div>
               </div>
+            </motion.div>
+
+            {/* CTA mobile/tablet — o CTA do lado direito é lg:block */}
+            <motion.div
+              className="mt-10 lg:hidden"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.9, ease: E }}
+            >
+              <Link
+                href={`/${slug}/resultados`}
+                className="group inline-flex items-center gap-3 border border-[#9810fa] px-6 py-3.5 text-sm font-bold uppercase tracking-[0.1em] text-[#9810fa] transition-all duration-200 hover:bg-[#9810fa] hover:text-white active:scale-[0.98]"
+              >
+                Ver Resultados
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
             </motion.div>
 
           </div>{/* /left */}

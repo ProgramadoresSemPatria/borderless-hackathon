@@ -21,6 +21,9 @@ export function TeamCreateDialog({ hackathonId, open, onClose }: Props) {
   const [name, setName] = useState('')
   const [project, setProject] = useState('')
   const [description, setDescription] = useState('')
+  const [githubUrl, setGithubUrl] = useState('')
+  const [demoUrl, setDemoUrl] = useState('')
+  const [presentationUrl, setPresentationUrl] = useState('')
   const [saving, setSaving] = useState(false)
 
   async function handleSave() {
@@ -33,6 +36,9 @@ export function TeamCreateDialog({ hackathonId, open, onClose }: Props) {
         project: project.trim(),
         description: description.trim() || undefined,
         tags: [],
+        githubUrl: githubUrl.trim() || undefined,
+        demoUrl: demoUrl.trim() || undefined,
+        presentationUrl: presentationUrl.trim() || undefined,
       })
       onClose()
     } finally {
@@ -77,6 +83,18 @@ export function TeamCreateDialog({ hackathonId, open, onClose }: Props) {
               rows={3}
               className="w-full min-h-[80px] resize-none rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-[#4a4a4a] focus:border-[#9810fa]/50 focus:ring-1 focus:ring-[#9810fa]/20 focus:outline-none"
             />
+          </FormField>
+
+          <FormField label="Link do Demo">
+            <Input value={demoUrl} onChange={e => setDemoUrl(e.target.value)} placeholder="https://…" className={inputCls} />
+          </FormField>
+
+          <FormField label="Link do GitHub">
+            <Input value={githubUrl} onChange={e => setGithubUrl(e.target.value)} placeholder="https://github.com/…" className={inputCls} />
+          </FormField>
+
+          <FormField label="Link da Apresentação">
+            <Input value={presentationUrl} onChange={e => setPresentationUrl(e.target.value)} placeholder="https://…" className={inputCls} />
           </FormField>
 
           <div className="flex justify-end gap-2 pt-2">
