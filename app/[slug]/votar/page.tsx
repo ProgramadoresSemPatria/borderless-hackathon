@@ -12,7 +12,7 @@ import { Vote, X, Check, Lock, LogIn } from 'lucide-react'
 
 export default function VotarPage() {
   const { slug } = useParams<{ slug: string }>()
-  const { isSignedIn, isLoaded: clerkLoaded } = useUser()
+  const { user, isSignedIn, isLoaded: clerkLoaded } = useUser()
   const [confirmTeamId, setConfirmTeamId] = useState<string | null>(null)
   const [voteError, setVoteError] = useState<string | null>(null)
   const [justVoted, setJustVoted] = useState(false)
@@ -28,25 +28,38 @@ export default function VotarPage() {
   )
   const myVote = useQuery(
     api.hackathons.getMyVote,
-    hackathon && isSignedIn ? { hackathonId: hackathon._id } : 'skip',
+    hackathon && isSignedIn && user ? { hackathonId: hackathon._id, userId: user.id } : 'skip',
   )
   const castVote = useMutation(api.mutations.castVote)
 
   const handleVote = useCallback(async () => {
     if (!hackathon || !confirmTeamId) return
+    if (!user) {
+      setVoteError('Você precisa estar logado para votar.')
+      return
+    }
+    setVoteError(null)
     try {
       await castVote({
         hackathonId: hackathon._id,
         teamId: confirmTeamId as Id<'teams'>,
+        userId: user.id,
       })
       setConfirmTeamId(null)
       setJustVoted(true)
       setTimeout(() => setJustVoted(false), 3000)
     } catch (err: unknown) {
-      setVoteError(err instanceof Error ? err.message : 'Erro ao votar')
-      setTimeout(() => setVoteError(null), 4000)
+      // Surface the real reason: keep it visible (no auto-dismiss) and log it
+      // so it can be inspected in the console / production logs.
+      console.error('[votar] castVote failed:', err)
+      const raw = err instanceof Error ? err.message : 'Erro ao votar'
+      // Convex wraps server errors; show a clearer hint for the auth case.
+      const friendly = /logado|identity|unauthenticated|not authenticated/i.test(raw)
+        ? 'Sua sessão expirou ou não foi reconhecida. Saia e entre novamente para votar.'
+        : raw
+      setVoteError(friendly)
     }
-  }, [hackathon, confirmTeamId, castVote])
+  }, [hackathon, confirmTeamId, castVote, user])
 
   const hasVoted = !!myVote
   const votingOpen = hackathon?.votingOpen === true
@@ -198,7 +211,7 @@ export default function VotarPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-              onClick={() => setConfirmTeamId(null)}
+              onClick={() => { setConfirmTeamId(null); setVoteError(null) }}
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -213,9 +226,14 @@ export default function VotarPage() {
                   <span className="font-bold text-[#9810fa]">{confirmTeam.name}</span>?
                   Você só pode votar uma vez.
                 </p>
+                {voteError && (
+                  <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300">
+                    {voteError}
+                  </div>
+                )}
                 <div className="flex gap-3">
                   <button
-                    onClick={() => setConfirmTeamId(null)}
+                    onClick={() => { setConfirmTeamId(null); setVoteError(null) }}
                     className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-white/[0.1] bg-white/5 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-white/10"
                   >
                     <X className="h-3.5 w-3.5" />
@@ -258,7 +276,8 @@ export default function VotarPage() {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 40 }}
-              className="fixed bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border border-red-500/30 bg-red-500/10 px-6 py-3 shadow-xl backdrop-blur-md"
+              onClick={() => setVoteError(null)}
+              className="fixed bottom-8 left-1/2 z-50 max-w-md -translate-x-1/2 cursor-pointer rounded-2xl border border-red-500/30 bg-red-500/10 px-6 py-3 text-center shadow-xl backdrop-blur-md"
             >
               <span className="text-sm font-bold text-red-400">{voteError}</span>
             </motion.div>

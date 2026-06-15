@@ -14,7 +14,7 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { exportTeamsCsv } from '@/lib/excel'
 import { motion } from 'framer-motion'
-import { Pencil, Search, Plus, Upload, Download, Trophy, ChevronRight, UserPlus } from 'lucide-react'
+import { Pencil, Search, Plus, Upload, Download, Trophy, ChevronRight, UserPlus, Github } from 'lucide-react'
 
 function rankColor(position: number) {
   if (position === 1) return 'text-[#9810fa]'
@@ -39,8 +39,46 @@ export default function AdminTeamsPage() {
   const [showImport, setShowImport] = useState(false)
   const [expandedTeamId, setExpandedTeamId] = useState<Id<'teams'> | null>(null)
   const [addMemberToTeamId, setAddMemberToTeamId] = useState<Id<'teams'> | null>(null)
+  const [ghImporting, setGhImporting] = useState(false)
+  const [ghMessage, setGhMessage] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null)
 
   const criteria = hackathon?.criteria ?? []
+  const githubPrefix = hackathon?.githubPrefix?.trim() ?? ''
+
+  const handleGithubImport = useCallback(async () => {
+    if (!selectedId) return
+    setGhImporting(true)
+    setGhMessage(null)
+    try {
+      const res = await fetch('/api/admin/github-import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hackathonId: selectedId }),
+      })
+      const data = (await res.json()) as {
+        ok?: boolean
+        created?: number
+        updated?: number
+        matched?: number
+        message?: string
+        error?: string
+      }
+      if (!res.ok || data.error) {
+        setGhMessage({ kind: 'error', text: data.error ?? 'Falha ao importar do GitHub.' })
+      } else if (data.matched === 0) {
+        setGhMessage({ kind: 'error', text: data.message ?? 'Nenhum repositório encontrado.' })
+      } else {
+        setGhMessage({
+          kind: 'ok',
+          text: `${data.created ?? 0} criados · ${data.updated ?? 0} atualizados (de ${data.matched} repositórios).`,
+        })
+      }
+    } catch {
+      setGhMessage({ kind: 'error', text: 'Erro de rede ao importar do GitHub.' })
+    } finally {
+      setGhImporting(false)
+    }
+  }, [selectedId])
 
   const filtered = useMemo(() => {
     if (!teams) return []
@@ -110,6 +148,16 @@ export default function AdminTeamsPage() {
             </Button>
             <Button
               variant="ghost"
+              onClick={handleGithubImport}
+              disabled={ghImporting || !githubPrefix}
+              title={githubPrefix ? `Importar repositórios com prefixo ${githubPrefix}` : 'Defina o prefixo do GitHub na edição'}
+              className="gap-1.5 text-[#b2b2b2] hover:bg-white/10 hover:text-white disabled:opacity-50"
+            >
+              <Github className="h-4 w-4" />
+              {ghImporting ? 'Importando…' : 'GitHub'}
+            </Button>
+            <Button
+              variant="ghost"
               onClick={() => teams && exportTeamsCsv(teams, criteria)}
               disabled={!teams || teams.length === 0}
               className="gap-1.5 text-[#b2b2b2] hover:bg-white/10 hover:text-white disabled:opacity-50"
@@ -118,6 +166,18 @@ export default function AdminTeamsPage() {
               Exportar
             </Button>
           </div>
+
+          {ghMessage && (
+            <div
+              className={`mb-3 rounded-lg border px-4 py-2.5 text-sm ${
+                ghMessage.kind === 'ok'
+                  ? 'border-[#2debb1]/30 bg-[#2debb1]/10 text-[#2debb1]'
+                  : 'border-red-400/30 bg-red-400/10 text-red-300'
+              }`}
+            >
+              {ghMessage.text}
+            </div>
+          )}
 
           {/* Result count */}
           <p className="mb-4 text-xs text-[#636363]">
@@ -140,8 +200,8 @@ export default function AdminTeamsPage() {
               </Button>
             </div>
           ) : (
-            <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#2a2a2b]">
-              <table className="w-full text-sm">
+            <div className="overflow-x-auto rounded-xl border border-white/[0.08] bg-[#2a2a2b]">
+              <table className="w-full min-w-[640px] text-sm">
                 <thead>
                   <tr className="sticky top-0 z-10 border-b border-white/10 bg-[#2a2a2b] text-left">
                     <th scope="col" className="px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363] whitespace-nowrap w-12">#</th>

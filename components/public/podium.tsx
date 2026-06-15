@@ -29,7 +29,7 @@ function PodiumBlock({
       initial={{ opacity: 0, y: 32 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: position * 0.12, ease: 'easeOut' }}
-      className={`flex flex-col overflow-hidden rounded-xl border border-white/[0.08] ${isFirst ? 'w-44' : 'w-36'}`}
+      className={`flex flex-col overflow-hidden rounded-xl border border-white/[0.08] ${isFirst ? 'w-28 sm:w-44' : 'w-24 sm:w-36'}`}
     >
       {/* Info */}
       <div className="bg-[#2a2a2b] px-4 py-4 text-center">
@@ -75,7 +75,7 @@ export function Podium({ teams }: PodiumProps) {
   const [first, second, third] = [teams[0], teams[1], teams[2]]
 
   return (
-    <div className="flex items-end justify-center gap-3">
+    <div className="flex items-end justify-center gap-2 sm:gap-3">
       {second && <PodiumBlock team={second} position={2} barHeight={80} />}
       {first && <PodiumBlock team={first} position={1} barHeight={120} />}
       {third && <PodiumBlock team={third} position={3} barHeight={56} />}

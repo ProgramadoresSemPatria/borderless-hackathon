@@ -39,6 +39,9 @@ export function TeamEditDialog({ teamId, hackathonId, criteria, open, onClose }:
   const [name, setName] = useState('')
   const [project, setProject] = useState('')
   const [description, setDescription] = useState('')
+  const [githubUrl, setGithubUrl] = useState('')
+  const [demoUrl, setDemoUrl] = useState('')
+  const [presentationUrl, setPresentationUrl] = useState('')
   const [initialized, setInitialized] = useState(false)
   const [saving, setSaving] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
@@ -56,6 +59,9 @@ export function TeamEditDialog({ teamId, hackathonId, criteria, open, onClose }:
     setName(team.name)
     setProject(team.project)
     setDescription(team.description ?? '')
+    setGithubUrl(team.githubUrl ?? '')
+    setDemoUrl(team.demoUrl ?? '')
+    setPresentationUrl(team.presentationUrl ?? '')
     setInitialized(true)
   }
 
@@ -73,6 +79,10 @@ export function TeamEditDialog({ teamId, hackathonId, criteria, open, onClose }:
         name: name.trim() || undefined,
         project: project.trim() || undefined,
         description: description.trim() || undefined,
+        // Empty string clears the link (display checks truthiness).
+        githubUrl: githubUrl.trim(),
+        demoUrl: demoUrl.trim(),
+        presentationUrl: presentationUrl.trim(),
       })
       onClose()
     } finally {
@@ -146,6 +156,18 @@ export function TeamEditDialog({ teamId, hackathonId, criteria, open, onClose }:
                 className="w-full min-h-[80px] resize-none rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-[#4a4a4a] focus:border-[#9810fa]/50 focus:ring-1 focus:ring-[#9810fa]/20 focus:outline-none"
                 placeholder="Descreva o projeto do time…"
               />
+            </FormField>
+
+            <FormField label="Link do Demo">
+              <Input value={demoUrl} onChange={e => setDemoUrl(e.target.value)} placeholder="https://…" className={inputCls} />
+            </FormField>
+
+            <FormField label="Link do GitHub">
+              <Input value={githubUrl} onChange={e => setGithubUrl(e.target.value)} placeholder="https://github.com/…" className={inputCls} />
+            </FormField>
+
+            <FormField label="Link da Apresentação">
+              <Input value={presentationUrl} onChange={e => setPresentationUrl(e.target.value)} placeholder="https://…" className={inputCls} />
             </FormField>
 
             {team.members.length > 0 && (

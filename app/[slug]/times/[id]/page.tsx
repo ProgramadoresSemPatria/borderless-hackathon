@@ -4,8 +4,11 @@ import { type Id } from '@/convex/_generated/dataModel'
 import { notFound } from 'next/navigation'
 import { PublicNavbar } from '@/components/public/navbar'
 import { ScoreBar } from '@/components/public/score-bar'
-import { ArrowLeft, Users } from 'lucide-react'
+import { ArrowLeft, Users, Github, ExternalLink, Presentation } from 'lucide-react'
 import Link from 'next/link'
+
+const linkCls =
+  'inline-flex items-center gap-2 rounded-lg border border-white/[0.12] bg-white/[0.04] px-4 py-2 text-sm font-semibold text-white transition-colors hover:border-[#9810fa]/50 hover:bg-[#9810fa]/10'
 
 function rankTextClass(position: number) {
   if (position === 1) return 'text-[#9810fa]'
@@ -41,15 +44,15 @@ export default async function SlugTeamDetailPage({
         </Link>
 
         {/* Header */}
-        <div className="mb-8 rounded-xl border border-white/[0.08] bg-[#2a2a2b] p-8">
-          <div className="flex items-start justify-between gap-4">
+        <div className="mb-8 rounded-xl border border-white/[0.08] bg-[#2a2a2b] p-6 sm:p-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               {team.position && (
                 <div className={`mb-2 text-[10px] font-black uppercase tracking-[0.15em] ${rankTextClass(pos)}`}>
                   #{team.position} lugar
                 </div>
               )}
-              <h1 className="mb-1 text-3xl font-extrabold text-white">{team.name}</h1>
+              <h1 className="mb-1 text-2xl font-extrabold text-white sm:text-3xl">{team.name}</h1>
               <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#636363]">{team.project}</p>
               <p className="mb-4 text-[#b2b2b2]">{team.description}</p>
               <div className="flex flex-wrap gap-1">
@@ -60,13 +63,36 @@ export default async function SlugTeamDetailPage({
                 ))}
               </div>
             </div>
-            <div className="text-right">
+            <div className="shrink-0 text-left sm:text-right">
               <div className={`text-4xl font-black ${rankTextClass(pos)}`}>
                 {team.totalScore.toFixed(2)}
               </div>
               <div className="text-sm text-[#636363]">pontuação final</div>
             </div>
           </div>
+
+          {(team.demoUrl || team.githubUrl || team.presentationUrl) && (
+            <div className="mt-6 flex flex-wrap gap-3 border-t border-white/[0.06] pt-6">
+              {team.demoUrl && (
+                <a href={team.demoUrl} target="_blank" rel="noopener noreferrer" className={linkCls}>
+                  <ExternalLink className="h-4 w-4 text-[#2debb1]" />
+                  Demo
+                </a>
+              )}
+              {team.githubUrl && (
+                <a href={team.githubUrl} target="_blank" rel="noopener noreferrer" className={linkCls}>
+                  <Github className="h-4 w-4" />
+                  GitHub
+                </a>
+              )}
+              {team.presentationUrl && (
+                <a href={team.presentationUrl} target="_blank" rel="noopener noreferrer" className={linkCls}>
+                  <Presentation className="h-4 w-4 text-[#9810fa]" />
+                  Apresentação
+                </a>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">

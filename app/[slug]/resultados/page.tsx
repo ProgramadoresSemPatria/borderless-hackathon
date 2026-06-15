@@ -185,16 +185,16 @@ export default async function SlugResultadosPage({
             </h2>
           </FadeUp>
           <FadeUp delay={0.08}>
-            <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#2a2a2b]">
-              <table className="w-full">
+            <div className="overflow-x-auto rounded-xl border border-white/[0.08] bg-[#2a2a2b]">
+              <table className="w-full min-w-[560px]">
                 <thead>
                   <tr className="border-b border-white/10 text-left">
-                    <th scope="col" className="px-6 py-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363]">#</th>
-                    <th scope="col" className="px-6 py-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363]">Embaixador</th>
-                    <th scope="col" className="px-6 py-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363]">Time</th>
-                    <th scope="col" className="px-6 py-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363]">Presença</th>
-                    <th scope="col" className="px-6 py-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363]">Tasks</th>
-                    <th scope="col" className="px-6 py-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363]">Pontos</th>
+                    <th scope="col" className="px-3 py-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363] sm:px-6">#</th>
+                    <th scope="col" className="px-3 py-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363] sm:px-6">Embaixador</th>
+                    <th scope="col" className="px-3 py-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363] sm:px-6">Time</th>
+                    <th scope="col" className="px-3 py-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363] sm:px-6">Presença</th>
+                    <th scope="col" className="px-3 py-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363] sm:px-6">Tasks</th>
+                    <th scope="col" className="px-3 py-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#636363] sm:px-6">Pontos</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -205,18 +205,18 @@ export default async function SlugResultadosPage({
                         key={p._id}
                         className="border-b border-white/[0.06] transition-colors hover:bg-white/[0.06] last:border-0"
                       >
-                        <td className="px-6 py-4 text-sm font-black tabular-nums">
+                        <td className="px-3 py-4 text-sm font-black tabular-nums sm:px-6">
                           <span className={rankColor(i + 1)}>{i + 1}</span>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-3 py-4 sm:px-6">
                           <span className="font-semibold text-white">{p.name}</span>
                         </td>
-                        <td className="px-6 py-4 text-sm text-[#636363]">{team?.name ?? '—'}</td>
-                        <td className="px-6 py-4 font-semibold tabular-nums text-white">
+                        <td className="px-3 py-4 text-sm text-[#636363] sm:px-6">{team?.name ?? '—'}</td>
+                        <td className="px-3 py-4 font-semibold tabular-nums text-white sm:px-6">
                           {p.metrics?.attendance ?? 0}%
                         </td>
-                        <td className="px-6 py-4 text-[#b2b2b2]">{p.metrics?.tasksCompleted ?? 0}</td>
-                        <td className="px-6 py-4 font-black tabular-nums text-white">
+                        <td className="px-3 py-4 text-[#b2b2b2] sm:px-6">{p.metrics?.tasksCompleted ?? 0}</td>
+                        <td className="px-3 py-4 font-black tabular-nums text-white sm:px-6">
                           {p.metrics?.totalPoints ?? 0}
                         </td>
                       </tr>

@@ -122,6 +122,8 @@ function CreateHackathonDialog({
   const [status, setStatus] = useState<'upcoming' | 'live' | 'finished'>('upcoming')
   const [criteriaInput, setCriteriaInput] = useState('')
   const [criteria, setCriteria] = useState<string[]>(['Inovação', 'Execução', 'Pitch', 'Impacto'])
+  const [githubOrg, setGithubOrg] = useState('ProgramadoresSemPatria')
+  const [githubPrefix, setGithubPrefix] = useState('')
   const [saving, setSaving] = useState(false)
 
   const dateString = dateValue ? formatDatePtBr(new Date(dateValue + 'T12:00:00')) : ''
@@ -149,6 +151,8 @@ function CreateHackathonDialog({
         date: dateString,
         status,
         criteria,
+        githubOrg: githubOrg.trim() || undefined,
+        githubPrefix: githubPrefix.trim() || undefined,
       })
       onCreated(id)
     } finally {
@@ -256,6 +260,32 @@ function CreateHackathonDialog({
                 Adicionar
               </Button>
             </div>
+          </div>
+
+          {/* GitHub import */}
+          <div className="space-y-2">
+            <SectionHeader title="GitHub (importação de projetos)" />
+            <div className="grid grid-cols-2 gap-3">
+              <FormField label="Organização">
+                <Input
+                  value={githubOrg}
+                  onChange={e => setGithubOrg(e.target.value)}
+                  placeholder="ProgramadoresSemPatria"
+                  className={inputCls}
+                />
+              </FormField>
+              <FormField label="Prefixo dos repositórios">
+                <Input
+                  value={githubPrefix}
+                  onChange={e => setGithubPrefix(e.target.value)}
+                  placeholder="HB01-2026"
+                  className={inputCls}
+                />
+              </FormField>
+            </div>
+            <p className="text-xs text-[#636363]">
+              Repositórios cujo nome começa com o prefixo (ex.: <code>HB01-2026_projeto</code>) serão importados como times.
+            </p>
           </div>
 
           <div className="flex justify-end gap-2 pt-2">

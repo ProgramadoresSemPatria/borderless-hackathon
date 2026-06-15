@@ -6,7 +6,7 @@ import { HeroReveal } from '@/components/animated/hero-reveal'
 import { BlurText } from '@/components/animated/blur-text'
 import { FadeUp } from '@/components/animated/fade-up'
 import Link from 'next/link'
-import { Users, ArrowRight } from 'lucide-react'
+import { Users, ArrowRight, Github, ExternalLink, Presentation } from 'lucide-react'
 
 function rankColor(position: number | null) {
   if (position === null) return 'text-[#636363]'
@@ -92,7 +92,12 @@ export default async function SlugTimesPage({
                       <Users className="h-3.5 w-3.5 flex-shrink-0" />
                       <span className="line-clamp-1">{team.memberNames.join(', ')}</span>
                     </div>
-                    <ArrowRight className="h-3.5 w-3.5 flex-shrink-0 text-[#636363] transition-transform group-hover:translate-x-0.5" />
+                    <div className="flex flex-shrink-0 items-center gap-2 text-[#636363]">
+                      {team.demoUrl && <ExternalLink className="h-3.5 w-3.5 text-[#2debb1]/70" aria-label="Demo disponível" />}
+                      {team.githubUrl && <Github className="h-3.5 w-3.5" aria-label="GitHub disponível" />}
+                      {team.presentationUrl && <Presentation className="h-3.5 w-3.5 text-[#9810fa]/70" aria-label="Apresentação disponível" />}
+                      <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                    </div>
                   </div>
                 </div>
               </Link>

@@ -9,6 +9,9 @@ type TeamForExport = {
   totalScore: number
   memberNames: string[]
   scores: Array<{ criteriaKey: string; value: number }>
+  demoUrl?: string
+  githubUrl?: string
+  presentationUrl?: string
 }
 
 type ParticipantForExport = {
@@ -101,8 +104,16 @@ export function downloadTemplate(): void {
 
   // Teams sheet
   const teamsWs = XLSX.utils.aoa_to_sheet([
-    ['Nome', 'Projeto', 'Descricao', 'Membros'],
-    ['DevForce', 'BorderBot', 'Descrição do projeto', 'Ana Souza, Bruno Lima'],
+    ['Nome', 'Projeto', 'Descricao', 'Membros', 'Demo', 'GitHub', 'Apresentacao'],
+    [
+      'DevForce',
+      'BorderBot',
+      'Descrição do projeto',
+      'Ana Souza, Bruno Lima',
+      'https://demo.exemplo.com',
+      'https://github.com/org/repo',
+      'https://slides.exemplo.com',
+    ],
   ])
   XLSX.utils.book_append_sheet(wb, teamsWs, 'Times')
 
@@ -161,7 +172,7 @@ export function exportReportFromConvex(
   if (typeof window === 'undefined') return
   const wb = XLSX.utils.book_new()
 
-  const teamsHeaders = ['Posição', 'Nome', 'Projeto', 'Membros', ...criteria, 'Total']
+  const teamsHeaders = ['Posição', 'Nome', 'Projeto', 'Membros', ...criteria, 'Total', 'Demo', 'GitHub', 'Apresentacao']
   const teamsRows = [...teams]
     .sort((a, b) => (a.position ?? 99) - (b.position ?? 99))
     .map((t) => [
@@ -171,6 +182,9 @@ export function exportReportFromConvex(
       t.memberNames.join(', '),
       ...criteria.map((c) => t.scores.find((s) => s.criteriaKey === c)?.value ?? 0),
       t.totalScore,
+      t.demoUrl ?? '',
+      t.githubUrl ?? '',
+      t.presentationUrl ?? '',
     ])
   const teamsWs = XLSX.utils.aoa_to_sheet([teamsHeaders, ...teamsRows])
   XLSX.utils.book_append_sheet(wb, teamsWs, 'Times')
@@ -196,7 +210,7 @@ export function exportReportFromConvex(
 
 export function exportTeamsCsv(teams: TeamForExport[], criteria: string[]): void {
   if (typeof window === 'undefined') return
-  const headers = ['Posição', 'Nome', 'Projeto', 'Membros', ...criteria, 'Total']
+  const headers = ['Posição', 'Nome', 'Projeto', 'Membros', ...criteria, 'Total', 'Demo', 'GitHub', 'Apresentacao']
   const rows = [...teams]
     .sort((a, b) => (a.position ?? 99) - (b.position ?? 99))
     .map((t) => [
@@ -206,6 +220,9 @@ export function exportTeamsCsv(teams: TeamForExport[], criteria: string[]): void
       t.memberNames.join(', '),
       ...criteria.map((c) => t.scores.find((s) => s.criteriaKey === c)?.value ?? 0),
       t.totalScore,
+      t.demoUrl ?? '',
+      t.githubUrl ?? '',
+      t.presentationUrl ?? '',
     ])
   const ws = XLSX.utils.aoa_to_sheet([headers, ...rows])
   const wb = XLSX.utils.book_new()

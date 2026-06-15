@@ -56,3 +56,6 @@ next-env.d.ts
 # opennext cloudflare build output
 .open-next/
 .wrangler/
+
+# QA artifacts (local only)
+qa-artifacts/

@@ -17,6 +17,9 @@ export interface Team {
   position: number | null
   coverImage?: string
   tags?: string[]
+  githubUrl?: string
+  demoUrl?: string
+  presentationUrl?: string
 }
 
 export interface Participant {
@@ -37,6 +40,9 @@ export type ImportedTeamRow = {
   Projeto: string
   Descricao: string
   Membros: string         // comma-separated participant names
+  Demo?: string
+  GitHub?: string
+  Apresentacao?: string
 }
 
 export type ImportedParticipantRow = {
